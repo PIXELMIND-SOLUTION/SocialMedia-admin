@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { FiEdit, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight, FiInfo, FiImage } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { FaCoins } from "react-icons/fa";
+import WalletAndSpins from "./WalletAndSpins";
 
 const USERS_PER_PAGE = 8;
 
@@ -9,6 +11,8 @@ const Users = ({ darkMode }) => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -115,6 +119,7 @@ const Users = ({ darkMode }) => {
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Mobile</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Wallet & Spins</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -136,8 +141,8 @@ const Users = ({ darkMode }) => {
                 paginatedUsers.map((user, index) => (
                   <tr
                     key={user._id}
-                    className="border-t dark:border-gray-700
-                               hover:bg-blue-50 dark:hover:bg-gray-700 transition"
+                    className="border-t dark:border-gray-700 fw-medium
+                               hover:bg-blue-50 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white transition"
                   >
                     <td className="px-4 py-3">
                       {(currentPage - 1) * USERS_PER_PAGE + index + 1}
@@ -163,38 +168,59 @@ const Users = ({ darkMode }) => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex justify-center gap-4">
+                      <button
+                        onClick={() => {
+                          setOpen(true);
+                          setUserId(user._id);
+                        }}
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition
+                          ${darkMode
+                            ? "bg-yellow-600 hover:bg-yellow-700 text-white"
+                            : "bg-yellow-500 hover:bg-yellow-600 text-white"
+                          }`}
+                      >
+                        <FaCoins className="inline" />
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-center gap-3">
+                        {/* View Posts */}
                         <button
                           onClick={() => navigate(`/admin/userposts/${user._id}`)}
-                          className="text-indigo-600 hover:text-indigo-800"
                           title="View Posts"
+                          className="p-2 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800 transition"
                         >
-                          <FiImage />
+                          <FiImage size={18} />
                         </button>
+
+                        {/* View Details */}
                         <button
                           onClick={() => navigate(`/admin/users/details/${user._id}`)}
-                          className="text-indigo-600 hover:text-indigo-800"
                           title="View Details"
+                          className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 hover:text-purple-800 transition"
                         >
-                          <FiInfo />
+                          <FiInfo size={18} />
                         </button>
 
+                        {/* Edit */}
                         <button
                           onClick={() => navigate(`/admin/users/${user._id}`)}
-                          className="text-blue-600 hover:text-blue-800"
-                          title="Edit"
+                          title="Edit User"
+                          className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition"
                         >
-                          <FiEdit />
+                          <FiEdit size={18} />
                         </button>
 
+                        {/* Delete */}
                         <button
                           onClick={() => handleDelete(user._id)}
-                          className="text-red-600 hover:text-red-800"
-                          title="Delete"
+                          title="Delete User"
+                          className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition"
                         >
-                          <FiTrash2 />
+                          <FiTrash2 size={18} />
                         </button>
                       </div>
+
 
                     </td>
                   </tr>
@@ -246,6 +272,13 @@ const Users = ({ darkMode }) => {
           </div>
         )}
       </div>
+      {open && (
+        <WalletAndSpins
+          userId={userId}
+          darkMode={darkMode}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </div>
   );
 };

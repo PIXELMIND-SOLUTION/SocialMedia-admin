@@ -12,6 +12,7 @@ import UserDetails from '../pages/users/UserDetails';
 import CoinPackage from '../pages/packages/CoinPackage';
 import CampaignPackage from '../pages/packages/CampaignPackage';
 import AdminUserPosts from '../pages/users/UserPosts';
+import AdminSpinDashboard from '../pages/spin/AdminSpin';
 
 const AdminPanel = () => {
     const navigate = useNavigate();
@@ -113,6 +114,8 @@ const AdminPanel = () => {
                             <Route path="/campaign-packages" element={<CampaignPackage darkMode={darkMode} collapsed={collapsed} />} />
 
                             {/* <Route path="/campaign-requests" element={<CampaignRequests darkMode={darkMode} collapsed={collapsed} />} /> */}
+
+                            <Route path="/spins" element={<AdminSpinDashboard darkMode={darkMode} collapsed={collapsed} />} />
 
                             <Route path="/orders" element={<Orders darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="/analytics" element={<Analytics darkMode={darkMode} collapsed={collapsed} />} />

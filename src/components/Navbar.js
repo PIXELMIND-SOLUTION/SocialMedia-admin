@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FaSearch, 
-  FaBell, 
-  FaEnvelope, 
-  FaSun, 
+import {
+  FaSearch,
+  FaBell,
+  FaEnvelope,
+  FaSun,
   FaMoon,
   FaBars,
   FaTimes,
   FaCog,
   FaUser,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaCompress,
+  FaExpand
 } from 'react-icons/fa';
 import { FiChevronDown, FiMenu } from 'react-icons/fi';
 
@@ -18,12 +20,24 @@ const Navbar = ({ toggleSidebar, toggleDarkMode, darkMode, collapsed, sidebarOpe
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -92,8 +106,8 @@ const Navbar = ({ toggleSidebar, toggleDarkMode, darkMode, collapsed, sidebarOpe
             placeholder="Search..."
             className={`
               w-full pl-10 pr-4 py-2 rounded-lg
-              ${darkMode 
-                ? 'bg-gray-700 text-white border-gray-600 placeholder-gray-400' 
+              ${darkMode
+                ? 'bg-gray-700 text-white border-gray-600 placeholder-gray-400'
                 : 'bg-gray-50 text-gray-800 border-gray-200 placeholder-gray-500'
               }
               border focus:outline-none focus:ring-2 focus:ring-blue-500
@@ -142,13 +156,21 @@ const Navbar = ({ toggleSidebar, toggleDarkMode, darkMode, collapsed, sidebarOpe
           )}
         </button>
 
-        {/* Messages */}
-        <button className={`relative p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}>
-          <FaEnvelope className="text-lg" />
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-            3
-          </span>
+        {/* Fullscreen Button */}
+        <button
+          onClick={toggleFullscreen}
+          title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+          className={`relative p-2 rounded-lg transition-colors
+    ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}
+  `}
+        >
+          {isFullscreen ? (
+            <FaCompress className="text-lg" />
+          ) : (
+            <FaExpand className="text-lg" />
+          )}
         </button>
+
 
         {/* Notifications */}
         <div className="relative">
@@ -163,11 +185,11 @@ const Navbar = ({ toggleSidebar, toggleDarkMode, darkMode, collapsed, sidebarOpe
               </span>
             )}
           </button>
-          
+
           {/* Notification Dropdown */}
           {notificationOpen && (
             <>
-              <div 
+              <div
                 className="fixed inset-0 z-40"
                 onClick={() => setNotificationOpen(false)}
               ></div>
@@ -245,7 +267,7 @@ const Navbar = ({ toggleSidebar, toggleDarkMode, darkMode, collapsed, sidebarOpe
           {/* Profile Dropdown */}
           {profileOpen && (
             <>
-              <div 
+              <div
                 className="fixed inset-0 z-40"
                 onClick={() => setProfileOpen(false)}
               ></div>

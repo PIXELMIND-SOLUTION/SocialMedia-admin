@@ -8,76 +8,97 @@ import {
   FiMail,
   FiPhone,
   FiCalendar,
-  FiMapPin,
   FiShield,
-  FiSearch
+  FiSearch,
+  FiBell,
+  FiImage
 } from "react-icons/fi";
+
+const API = "https://apisocial.atozkeysolution.com/api";
 
 const UserDetails = ({ darkMode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Search states
   const [followersSearch, setFollowersSearch] = useState("");
   const [followingSearch, setFollowingSearch] = useState("");
 
-  // =============================
-  // FETCH USER DETAILS
-  // =============================
+  /* ================= FETCH ALL DATA ================= */
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await axios.get(
-          `http://31.97.206.144:5002/api/users/${id}`
-        );
-        setUser(res.data.data);
+        const [userRes, dashboardRes, requestRes] = await Promise.all([
+          axios.get(`${API}/users/${id}`),
+          axios.get(`${API}/dashboard/${id}`),
+          axios.get(`${API}/requests/${id}`)
+        ]);
+
+        setUser(userRes.data.data);
+        setDashboard(dashboardRes.data.data);
+        setRequests(requestRes.data.requests || []);
       } catch (err) {
-        console.error("Failed to fetch user", err);
+        console.error("Failed to fetch user details", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    fetchAll();
   }, [id]);
 
-  // =============================
-  // FILTERED LISTS
-  // =============================
+  /* ================= FILTER LISTS ================= */
   const filteredFollowers = useMemo(() => {
     return (
-      user?.followers?.filter((f) =>
-        f.fullName?.toLowerCase().includes(followersSearch.toLowerCase()) ||
-        f.profile?.username?.toLowerCase().includes(followersSearch.toLowerCase())
+      user?.followers?.filter(
+        (f) =>
+          f.fullName?.toLowerCase().includes(followersSearch.toLowerCase()) ||
+          f.profile?.username
+            ?.toLowerCase()
+            .includes(followersSearch.toLowerCase())
       ) || []
     );
   }, [followersSearch, user]);
 
   const filteredFollowing = useMemo(() => {
     return (
-      user?.following?.filter((f) =>
-        f.fullName?.toLowerCase().includes(followingSearch.toLowerCase()) ||
-        f.profile?.username?.toLowerCase().includes(followingSearch.toLowerCase())
+      user?.following?.filter(
+        (f) =>
+          f.fullName?.toLowerCase().includes(followingSearch.toLowerCase()) ||
+          f.profile?.username
+            ?.toLowerCase()
+            .includes(followingSearch.toLowerCase())
       ) || []
     );
   }, [followingSearch, user]);
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500">Loading user details…</div>;
+    return (
+      <div className="p-10 text-center text-gray-500">
+        Loading user details…
+      </div>
+    );
   }
 
   if (!user) {
-    return <div className="p-8 text-center text-red-500">User not found</div>;
+    return (
+      <div className="p-10 text-center text-red-500">
+        User not found
+      </div>
+    );
   }
 
+  /* ================= UI ================= */
   return (
     <div className={`min-h-screen p-4 md:p-6 ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      <div className={`max-w-7xl mx-auto rounded-3xl shadow-xl p-6 md:p-8
-        ${darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"}`}>
-
+      <div
+        className={`max-w-7xl mx-auto rounded-3xl shadow-xl p-6 md:p-8
+        ${darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"}`}
+      >
         {/* BACK */}
         <button
           onClick={() => navigate(-1)}
@@ -86,19 +107,28 @@ const UserDetails = ({ darkMode }) => {
           <FiArrowLeft /> Back
         </button>
 
-        {/* PROFILE HEADER */}
-        <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start mb-10">
-          <img
-            src={user.profile?.image || "https://via.placeholder.com/120"}
-            alt="Profile"
-            className="w-28 h-28 rounded-full object-cover border"
-          />
+        {/* HEADER */}
+        <div className="flex flex-col lg:flex-row gap-6 items-center mb-10">
+          {dashboard?.user?.image ? (
+            <img
+              src={dashboard?.user?.image}
+              alt="Profile"
+              className="w-28 h-28 rounded-full object-cover border"
+            />
+          ) : (
+            <div
+              className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold text-white
+              bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500"
+            >
+              {dashboard?.user?.fullName?.charAt(0).toUpperCase()}
+            </div>
+          )}
 
           <div className="flex-1 text-center lg:text-left">
-            <h2 className="text-2xl font-bold text-blue-600">
-              {user.fullName}
-            </h2>
-            <p className="text-sm text-gray-500">@{user.profile?.username}</p>
+            <h2 className="text-2xl font-bold">{dashboard?.user?.fullName}</h2>
+            <p className="text-sm text-gray-500">
+              @{dashboard?.user?.username}
+            </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-4 text-sm">
               <span className="flex items-center gap-1">
@@ -108,66 +138,72 @@ const UserDetails = ({ darkMode }) => {
                 <FiPhone /> {user.mobile || "-"}
               </span>
               <span className="flex items-center gap-1">
-                <FiCalendar /> {new Date(user.createdAt).toLocaleDateString()}
+                <FiCalendar />{" "}
+                {new Date(user.createdAt).toLocaleDateString()}
               </span>
             </div>
           </div>
 
-          <span
-            className={`px-4 py-1 rounded-full text-sm font-semibold
-              ${user.accountStatus?.isActive
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"}`}
-          >
-            {user.accountStatus?.isActive ? "Active" : "Inactive"}
-          </span>
+          {/* Notifications */}
+          <div className="relative">
+            <FiBell className="text-2xl" />
+            {dashboard?.notifications > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {dashboard.notifications}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* INFO CARDS */}
-        <div className="grid md:grid-cols-2 gap-6 mb-10">
-          <InfoCard
-            title="Personal Info"
-            icon={<FiMapPin />}
-            items={[
-              ["Gender", user.personalInfo?.gender],
-              ["Country", user.personalInfo?.country],
-              ["Birthdate", user.personalInfo?.birthdate
-                ? new Date(user.personalInfo.birthdate).toLocaleDateString()
-                : "-"]
-            ]}
-            darkMode={darkMode}
-          />
+        {/* DASHBOARD STATS */}
+        <div className="grid grid-cols-3 gap-4 mb-10">
+          <StatCard label="Posts" value={dashboard?.stats?.posts} icon={<FiImage />} />
+          <StatCard label="Followers" value={dashboard?.stats?.followers} icon={<FiUsers />} />
+          <StatCard label="Following" value={dashboard?.stats?.following} icon={<FiUserPlus />} />
+        </div>
 
-          <InfoCard
-            title="Account Info"
-            icon={<FiShield />}
-            items={[
-              ["Coins", user.wallet?.coins],
-              ["Profile Visibility", user.privacy?.profileVisibility],
-              ["Search Indexed", user.privacy?.searchEngineIndexing ? "Yes" : "No"]
-            ]}
-            darkMode={darkMode}
-          />
+        {/* FOLLOW REQUESTS */}
+        <div className="mb-10">
+          <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+            <FiUserPlus /> Follow Requests ({requests.length})
+          </h3>
+
+          {requests.length === 0 ? (
+            <p className="text-sm text-gray-500">No pending requests</p>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {requests.map((r) => (
+                <div
+                  key={r._id}
+                  onClick={() => navigate(`/admin/users/details/${r._id}`)}
+                  className={`px-4 py-2 rounded-xl text-sm
+                    ${darkMode ? "bg-gray-700" : "bg-gray-100"}`}
+                >
+                  {r.fullName}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* FOLLOWERS / FOLLOWING */}
         <div className="grid lg:grid-cols-2 gap-8">
           <FollowCard
             title="Followers"
-            icon={<FiUsers />}
             list={filteredFollowers}
             search={followersSearch}
             setSearch={setFollowersSearch}
             darkMode={darkMode}
+            navigate={navigate}
           />
 
           <FollowCard
             title="Following"
-            icon={<FiUserPlus />}
             list={filteredFollowing}
             search={followingSearch}
             setSearch={setFollowingSearch}
             darkMode={darkMode}
+            navigate={navigate}
           />
         </div>
       </div>
@@ -175,79 +211,56 @@ const UserDetails = ({ darkMode }) => {
   );
 };
 
-/* =============================
-   REUSABLE COMPONENTS
-============================= */
+/* ================= SUB COMPONENTS ================= */
 
-const InfoCard = ({ title, icon, items, darkMode }) => (
-  <div className={`rounded-2xl p-5 border
-    ${darkMode ? "border-gray-700 bg-gray-900" : "border-gray-200 bg-gray-50"}`}>
-    <h3 className="flex items-center gap-2 font-semibold text-blue-600 mb-4">
-      {icon} {title}
-    </h3>
-    <div className="space-y-2 text-sm">
-      {items.map(([label, value]) => (
-        <p key={label}>
-          <strong>{label}:</strong> {value || "-"}
-        </p>
-      ))}
+const StatCard = ({ label, value, icon }) => (
+  <div className="rounded-2xl p-4 border bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-500">{label}</span>
+      {icon}
     </div>
+    <p className="text-2xl font-bold mt-2">{value}</p>
   </div>
 );
 
-const FollowCard = ({ title, icon, list, search, setSearch, darkMode }) => (
-  <div className={`rounded-2xl border p-5 flex flex-col
-    ${darkMode ? "border-gray-700 bg-gray-900" : "border-gray-200 bg-gray-50"}`}>
+const FollowCard = ({ title, list, search, setSearch, darkMode, navigate }) => (
+  <div
+    className={`rounded-2xl border p-5
+      ${darkMode ? "border-gray-700 bg-gray-900" : "border-gray-200 bg-gray-50"}`}
+  >
+    <h3 className="font-semibold mb-3">
+      {title} ({list.length})
+    </h3>
 
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="flex items-center gap-2 font-semibold text-blue-600">
-        {icon} {title} ({list.length})
-      </h3>
-    </div>
-
-    {/* SEARCH */}
     <div className="relative mb-4">
       <FiSearch className="absolute left-3 top-3 text-gray-400" />
       <input
-        type="text"
-        placeholder={`Search ${title.toLowerCase()}...`}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className={`w-full pl-9 pr-3 py-2 rounded-xl border text-sm
-          focus:ring-2 focus:ring-blue-500 outline-none
-          ${darkMode
-            ? "bg-gray-800 border-gray-700"
-            : "bg-white border-gray-300"}`}
+        placeholder={`Search ${title.toLowerCase()}...`}
+        className="w-full pl-9 pr-3 py-2 rounded-xl border"
       />
     </div>
 
-    {/* LIST */}
-    <div className="space-y-2 overflow-y-auto max-h-80 pr-1">
-      {list.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center mt-10">
-          No results found
-        </p>
-      ) : (
-        list.map((u) => (
-          <div
-            key={u._id}
-            className={`flex items-center gap-3 p-3 rounded-xl transition
-              ${darkMode
-                ? "bg-gray-800 hover:bg-gray-700"
-                : "bg-white hover:bg-gray-100"}`}
-          >
-            <img
-              src={u.profile?.image || "https://via.placeholder.com/40"}
-              alt=""
-              className="w-9 h-9 rounded-full object-cover"
-            />
-            <div>
-              <p className="font-medium text-sm">{u.fullName}</p>
-              <p className="text-xs text-gray-500">@{u.profile?.username}</p>
-            </div>
+    <div className="space-y-2 max-h-72 overflow-y-auto">
+      {list.map((u) => (
+        <div
+          key={u._id}
+          onClick={() => navigate(`/admin/users/details/${u._id}`)}
+          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer
+            ${darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white hover:bg-gray-100"}`}
+        >
+          <img
+            src={u.profile?.image}
+            alt=""
+            className="w-9 h-9 rounded-full object-cover"
+          />
+          <div>
+            <p className="text-sm font-medium">{u.fullName}</p>
+            <p className="text-xs text-gray-500">@{u.profile?.username}</p>
           </div>
-        ))
-      )}
+        </div>
+      ))}
     </div>
   </div>
 );

@@ -72,7 +72,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
         { id: 'campaign package', text: 'Campaign Packages', path: '/campaign-packages' }
       ]
     },
-    { id: 'orders', icon: <FaShoppingCart />, text: 'Orders', path: '/orders' },
+    { id: 'spins', icon: <FaShoppingCart />, text: 'Spins', path: '/spins' },
     { 
       id: 'Approvals', 
       icon: <FaRegQuestionCircle />, 

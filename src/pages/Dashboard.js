@@ -179,7 +179,8 @@ const Dashboard = ({ darkMode }) => {
       trend: 'up',
       icon: <FaUsers className="text-3xl text-blue-500" />,
       color: 'blue',
-      subtitle: `${dashboardData.users.active} active, ${dashboardData.users.inactive} inactive`
+      subtitle: `${dashboardData.users.active} active, ${dashboardData.users.inactive} inactive`,
+      link: '/admin/users'
     },
     {
       title: 'Total Posts',
@@ -188,7 +189,8 @@ const Dashboard = ({ darkMode }) => {
       trend: 'up',
       icon: <FaFileAlt className="text-3xl text-green-500" />,
       color: 'green',
-      subtitle: `${dashboardData.posts.totalLikes} likes, ${dashboardData.posts.totalComments} comments`
+      subtitle: `${dashboardData.posts.totalLikes} likes, ${dashboardData.posts.totalComments} comments`,
+      link: '/admin/posts'
     },
     {
       title: 'Total Revenue',
@@ -197,7 +199,8 @@ const Dashboard = ({ darkMode }) => {
       trend: 'up',
       icon: <FaDollarSign className="text-3xl text-purple-500" />,
       color: 'purple',
-      subtitle: `Currency: ${dashboardData.revenue.currency}`
+      subtitle: `Currency: ${dashboardData.revenue.currency}`,
+      link: '/admin/coin-payments'
     },
     {
       title: 'Campaigns',
@@ -206,7 +209,8 @@ const Dashboard = ({ darkMode }) => {
       trend: dashboardData.campaigns.pendingApprovals > 0 ? 'up' : 'stable',
       icon: <FaBullhorn className="text-3xl text-orange-500" />,
       color: 'orange',
-      subtitle: `${dashboardData.campaigns.pendingApprovals} pending`
+      subtitle: `${dashboardData.campaigns.pendingApprovals} pending`,
+      link: '/admin/campaigns'
     }
   ];
 
@@ -263,6 +267,7 @@ const Dashboard = ({ darkMode }) => {
               ${darkMode ? 'bg-gray-800' : 'bg-white'}
               border ${darkMode ? 'border-gray-700' : 'border-gray-200'}
             `}
+            onClick={() => navigate(`${stat.link}`)}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -305,7 +310,7 @@ const Dashboard = ({ darkMode }) => {
             <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Platform Growth
             </h3>
-            <select
+            {/* <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
               className={`
@@ -320,7 +325,7 @@ const Dashboard = ({ darkMode }) => {
               <option value="7days">Last 7 days</option>
               <option value="30days">Last 30 days</option>
               <option value="90days">Last 90 days</option>
-            </select>
+            </select> */}
           </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -532,11 +537,11 @@ const Dashboard = ({ darkMode }) => {
                     <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {getTimeAgo(campaign.createdAt)}
                     </p>
-                    {campaign.adminApprovalStatus === 'pending' && (
+                    {/* {campaign.adminApprovalStatus === 'pending' && (
                       <button className="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors">
                         Review
                       </button>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

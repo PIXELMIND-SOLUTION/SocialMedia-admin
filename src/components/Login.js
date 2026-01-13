@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiLogIn } from "react-icons/fi";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -8,17 +9,40 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
-    // Hardcoded admin credentials
-    if (email === "admin@gmail.com" && password === "admin@123") {
-      localStorage.setItem("isAdmin", "true");
-      navigate("/admin");
-    } else {
-      setError("Invalid email or password");
+    try {
+      const response = await axios.post(
+        "https://apisocial.atozkeysolution.com/api/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      if (response.data.success) {
+        // Store in sessionStorage
+        sessionStorage.setItem("adminToken", response.data.data.token);
+        sessionStorage.setItem(
+          "adminId",
+          JSON.stringify(response.data.data.userId)
+        );
+
+        navigate("/admin");
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Invalid email or password"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +82,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="admin@gmail.com"
+                placeholder="admin123@gmail.com"
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl
                            focus:ring-2 focus:ring-orange-400 focus:outline-none"
               />
@@ -87,13 +111,15 @@ const Login = () => {
           {/* Button */}
           <button
             type="submit"
+            disabled={loading}
             className="w-full flex items-center justify-center gap-2
                        bg-gradient-to-r from-orange-500 to-orange-600
                        text-white py-3 rounded-xl font-semibold
-                       hover:opacity-90 transition-all active:scale-95"
+                       hover:opacity-90 transition-all active:scale-95
+                       disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <FiLogIn size={18} />
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

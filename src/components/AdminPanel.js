@@ -17,9 +17,12 @@ import CampaignRequests from '../pages/campaign/CampaignRequests';
 import RejectedCampaigns from '../pages/campaign/RejectedCampaigns';
 import Posts from '../pages/posts/AllPosts';
 import Calender from '../pages/Calender';
-import Payments from '../pages/Payments';
+import Payments from '../pages/payments/CoinPayments';
 import AdminDownloadConfig from '../pages/AdminDownloadConfig';
 import SinglePostDetails from '../pages/users/SinglePostDetails';
+import CoinPayments from '../pages/payments/CoinPayments';
+import PaymentDetails from '../pages/payments/SingleCoinPayment';
+import UserPayments from '../pages/users/UserPayments';
 
 const AdminPanel = () => {
     const navigate = useNavigate();
@@ -117,6 +120,7 @@ const AdminPanel = () => {
                             <Route path="/users/details/:id" element={<UserDetails darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path='/userposts/:userId' element={<AdminUserPosts darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path='/user/post/:postId' element={<SinglePostDetails darkMode={darkMode} collapsed={collapsed} />}/>
+                            <Route path="/payment/user/:userId" element={<UserPayments darkMode={darkMode} collapsed={collapsed} />} />
 
                             <Route path="/posts" element={<Posts darkMode={darkMode} collapsed={collapsed} />} />
 
@@ -132,8 +136,11 @@ const AdminPanel = () => {
 
                             <Route path='/download' element={<AdminDownloadConfig darkMode={darkMode} collapsed={collapsed} />}  />
 
+
+                            <Route path="/coin-payments" element={<CoinPayments darkMode={darkMode} collapsed={collapsed} />} />
+                            <Route path="/payment/:id" element={<PaymentDetails darkMode={darkMode} collapsed={collapsed} />} />
+
                             <Route path='/calender' element={<Calender darkMode={darkMode} collapsed={collapsed} />}/>
-                            <Route path="/payments" element={<Payments darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="/settings" element={<Settings darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="*" element={<Navigate to="/admin" replace />} />
                         </Routes>

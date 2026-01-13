@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { FiEdit, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight, FiInfo, FiImage } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight, FiInfo, FiImage, FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { FaCoins } from "react-icons/fa";
 import WalletAndSpins from "./WalletAndSpins";
@@ -120,6 +120,7 @@ const Users = ({ darkMode }) => {
                 <th className="px-4 py-3">Mobile</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Wallet & Spins</th>
+                <th className="px-4 py-4">Payments</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -180,6 +181,18 @@ const Users = ({ darkMode }) => {
                           }`}
                       >
                         <FaCoins className="inline" />
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => navigate(`/admin/payment/user/${user._id}`)}
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition
+                          ${darkMode
+                            ? "bg-green-600 hover:bg-green-700 text-white"
+                            : "bg-green-500 hover:bg-green-600 text-white"
+                          }`}
+                      >
+                        <FiDollarSign size={18} />
                       </button>
                     </td>
                     <td className="px-4 py-3">

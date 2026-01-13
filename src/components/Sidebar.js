@@ -17,7 +17,8 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaRegQuestionCircle,
-  FaDownload
+  FaDownload,
+  FaSquare
 } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useLocation } from 'react-router-dom';
@@ -87,8 +88,18 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
         { id: 'rejected campaigns', text: 'Rejected Campaigns', path: '/rejected-campaigns' }
       ]
     },
+    { id: 'Rooms', icon: <FaSquare />, text: 'Rooms', path: '/rooms',
+      subItems: [
+        { id: 'Rooms', text: 'Rooms', path: '/rooms' }
+      ]
+     },
     { id: 'calendar', icon: <FaCalendarAlt />, text: 'Calendar', path: '/calender' },
-    { id: 'payments', icon: <FaFileInvoiceDollar />, text: 'Payments', path: '/payments' },
+    { id: 'payments', icon: <FaFileInvoiceDollar />, text: 'Payments', path: '/coin-payments',
+      subItems: [
+        { id: 'Coin Payments', text: 'Coin Payments', path: '/coin-payments' },
+        { id: 'Campaign Payments', text: 'Campaign Payments', path: '/campaign-payments' }
+      ]
+     },
     { 
       id: 'settings', 
       icon: <FaCog />, 

@@ -254,7 +254,7 @@ const SinglePostDetails = ({ darkMode }) => {
                   Author Information
                 </h2>
                 <button
-                  onClick={() => navigate(`/admin/users/${post.userId._id}/posts`)}
+                  onClick={() => navigate(`/admin/userposts/${post.userId._id}`)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                     darkMode 
                       ? "bg-gray-700 hover:bg-gray-600 text-gray-300" 

@@ -23,6 +23,9 @@ import SinglePostDetails from '../pages/users/SinglePostDetails';
 import CoinPayments from '../pages/payments/CoinPayments';
 import PaymentDetails from '../pages/payments/SingleCoinPayment';
 import UserPayments from '../pages/users/UserPayments';
+import Rooms from '../pages/rooms/Rooms';
+import CampaignPayments from '../pages/payments/CampaignPayments';
+import Revenue from '../pages/Revenue';
 
 const AdminPanel = () => {
     const navigate = useNavigate();
@@ -134,11 +137,16 @@ const AdminPanel = () => {
 
                             <Route path="/spins" element={<AdminSpinDashboard darkMode={darkMode} collapsed={collapsed} />} />
 
+                            <Route path="/rooms" element={<Rooms darkMode={darkMode} collapsed={collapsed} />} />
+
                             <Route path='/download' element={<AdminDownloadConfig darkMode={darkMode} collapsed={collapsed} />}  />
 
 
                             <Route path="/coin-payments" element={<CoinPayments darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="/payment/:id" element={<PaymentDetails darkMode={darkMode} collapsed={collapsed} />} />
+                            <Route path="/campaign-payments" element={<CampaignPayments darkMode={darkMode} collapsed={collapsed} />} />
+
+                            <Route path="/revenue" element={<Revenue darkMode={darkMode} collapsed={collapsed} />} />
 
                             <Route path='/calender' element={<Calender darkMode={darkMode} collapsed={collapsed} />}/>
                             <Route path="/settings" element={<Settings darkMode={darkMode} collapsed={collapsed} />} />

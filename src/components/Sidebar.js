@@ -100,6 +100,12 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
         { id: 'Campaign Payments', text: 'Campaign Payments', path: '/campaign-payments' }
       ]
      },
+     { 
+      id: 'revenue analytics', 
+      icon: <FaCog />, 
+      text: 'Revenue Analytics', 
+      path: '/revenue'
+    },
     { 
       id: 'settings', 
       icon: <FaCog />, 

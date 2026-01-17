@@ -47,6 +47,7 @@ const Users = ({ darkMode }) => {
     const value = search.toLowerCase();
     return users.filter(
       (u) =>
+        u._id.toLowerCase().includes(value) ||
         u.fullName?.toLowerCase().includes(value) ||
         u.email?.toLowerCase().includes(value) ||
         u.mobile?.includes(value) ||
@@ -75,7 +76,7 @@ const Users = ({ darkMode }) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       await axios.delete(
-        `https://apisocial.atozkeysolution.com/api/user/${userId}`
+        `https://apisocial.atozkeysolution.com/api/users/${userId}`
       );
       fetchUsers();
     } catch (err) {
@@ -113,7 +114,8 @@ const Users = ({ darkMode }) => {
           <table className="min-w-full text-sm">
             <thead className="bg-blue-100 dark:bg-gray-700 text-blue-700 dark:text-gray-200">
               <tr>
-                <th className="px-4 py-3 text-left">#</th>
+                <th className="px-4 py-3 text-left">S NO</th>
+                <th className="px-4 py-3">ID</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Username</th>
                 <th className="px-4 py-3">Email</th>
@@ -147,6 +149,9 @@ const Users = ({ darkMode }) => {
                   >
                     <td className="px-4 py-3">
                       {(currentPage - 1) * USERS_PER_PAGE + index + 1}
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs">
+                      {user._id || "-"}
                     </td>
                     <td className="px-4 py-3 font-medium">
                       {user.fullName || "-"}

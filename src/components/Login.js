@@ -18,7 +18,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://apisocial.atozkeysolution.com/api/login",
+        "https://apisocial.atozkeysolution.com/api/adminlogin",
         {
           email,
           password,
@@ -29,9 +29,11 @@ const Login = () => {
         // Store in sessionStorage
         sessionStorage.setItem("adminToken", response.data.data.token);
         sessionStorage.setItem(
-          "adminId",
-          JSON.stringify(response.data.data.userId)
+          "adminemail",
+          JSON.stringify(response.data.data.email)
         );
+        sessionStorage.setItem("role", JSON.stringify(response.data.data.role));
+        sessionStorage.setItem("adminId", JSON.stringify(response.data.data.adminId));
 
         navigate("/admin");
       } else {

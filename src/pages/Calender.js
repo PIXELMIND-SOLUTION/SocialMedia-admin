@@ -14,7 +14,11 @@ import {
   Loader2,
   AlertCircle,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  Search,
+  Filter,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 /* ================= HELPERS ================= */
@@ -44,7 +48,6 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-
 const formatDateDisplay = (dateStr) => {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', {
@@ -64,6 +67,202 @@ const getMonthYear = (date) => {
 
 /* ================= API CONFIG ================= */
 const API_BASE_URL = "http://194.164.148.237:5002";
+
+/* ================= PAGINATION COMPONENT ================= */
+const Pagination = ({ currentPage, totalPages, onPageChange, darkMode }) => {
+  const getVisiblePages = () => {
+    const delta = 1;
+    const range = [];
+    const rangeWithDots = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+        range.push(i);
+      }
+    }
+
+    let prev = 0;
+    for (const i of range) {
+      if (i - prev > 1) {
+        rangeWithDots.push('...');
+      }
+      rangeWithDots.push(i);
+      prev = i;
+    }
+
+    return rangeWithDots;
+  };
+
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-center gap-1 mt-4">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className={`
+          p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+          ${darkMode
+            ? "hover:bg-gray-800 text-gray-400 disabled:hover:bg-transparent"
+            : "hover:bg-gray-100 text-gray-600 disabled:hover:bg-transparent"
+          }
+        `}
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      {getVisiblePages().map((page, index) => (
+        <button
+          key={index}
+          onClick={() => typeof page === 'number' && onPageChange(page)}
+          disabled={page === '...'}
+          className={`
+            min-w-8 h-8 px-2 rounded-lg text-sm font-medium transition-colors
+            ${page === '...' ? "cursor-default" : ""}
+            ${currentPage === page
+              ? darkMode
+                ? "bg-indigo-600 text-white"
+                : "bg-indigo-600 text-white"
+              : darkMode
+                ? "hover:bg-gray-800 text-gray-400"
+                : "hover:bg-gray-100 text-gray-600"
+            }
+          `}
+        >
+          {page}
+        </button>
+      ))}
+
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className={`
+          p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+          ${darkMode
+            ? "hover:bg-gray-800 text-gray-400 disabled:hover:bg-transparent"
+            : "hover:bg-gray-100 text-gray-600 disabled:hover:bg-transparent"
+          }
+        `}
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
+};
+
+/* ================= SEARCH & FILTER COMPONENT ================= */
+const SearchFilterBar = ({ 
+  section, 
+  searchQuery, 
+  onSearchChange, 
+  filters, 
+  onFilterChange, 
+  availableFilters,
+  darkMode 
+}) => {
+  const [showFilters, setShowFilters] = useState(false);
+
+  return (
+    <div className="mb-4">
+      <div className="flex flex-col sm:flex-row gap-3">
+        {/* Search Input */}
+        <div className="relative flex-1">
+          <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
+          <input
+            type="text"
+            placeholder={`Search ${section}...`}
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className={`
+              w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm transition-all
+              focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+              ${darkMode
+                ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
+              }
+            `}
+          />
+        </div>
+
+        {/* Filter Toggle Button */}
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className={`
+            px-4 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2
+            ${darkMode
+              ? "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"
+              : "bg-white hover:bg-gray-100 text-gray-700 border border-gray-300"
+            }
+          `}
+        >
+          <Filter className="w-4 h-4" />
+          Filters
+          {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </button>
+      </div>
+
+      {/* Filters Panel */}
+      {showFilters && availableFilters && (
+        <div className={`
+          mt-3 p-4 rounded-xl border
+          ${darkMode
+            ? "bg-gray-800/50 border-gray-700"
+            : "bg-white border-gray-200"
+          }
+        `}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(availableFilters).map(([filterKey, filterConfig]) => (
+              <div key={filterKey}>
+                <label className={`
+                  block text-sm font-medium mb-2
+                  ${darkMode ? "text-gray-300" : "text-gray-700"}
+                `}>
+                  {filterConfig.label}
+                </label>
+                {filterConfig.type === 'select' ? (
+                  <select
+                    value={filters[filterKey] || ''}
+                    onChange={(e) => onFilterChange(filterKey, e.target.value)}
+                    className={`
+                      w-full px-3 py-2 rounded-lg border text-sm transition-all
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+                      ${darkMode
+                        ? "bg-gray-800 border-gray-700 text-white"
+                        : "bg-white border-gray-300 text-gray-900"
+                      }
+                    `}
+                  >
+                    <option value="">All</option>
+                    {filterConfig.options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={filterConfig.type}
+                    value={filters[filterKey] || ''}
+                    onChange={(e) => onFilterChange(filterKey, e.target.value)}
+                    placeholder={filterConfig.placeholder}
+                    className={`
+                      w-full px-3 py-2 rounded-lg border text-sm transition-all
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+                      ${darkMode
+                        ? "bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                        : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
+                      }
+                    `}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 /* ================= STAT CARD COMPONENT ================= */
 const StatCard = ({
@@ -217,7 +416,6 @@ const Calendar = ({ darkMode = false }) => {
   const today = new Date();
   const todayStr = formatDate(new Date());
 
-
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [baseDate, setBaseDate] = useState(today);
   const [weeklyData, setWeeklyData] = useState({});
@@ -227,8 +425,84 @@ const Calendar = ({ darkMode = false }) => {
   const [error, setError] = useState(null);
   const [monthYear, setMonthYear] = useState(getMonthYear(today));
 
+  // Pagination states
+  const [registrationsPage, setRegistrationsPage] = useState(1);
+  const [postsPage, setPostsPage] = useState(1);
+  const [spinsPage, setSpinsPage] = useState(1);
+  const [campaignsPage, setCampaignsPage] = useState(1);
+  
+  const itemsPerPage = 5;
+
+  // Search states
+  const [registrationsSearch, setRegistrationsSearch] = useState("");
+  const [postsSearch, setPostsSearch] = useState("");
+  const [spinsSearch, setSpinsSearch] = useState("");
+  const [campaignsSearch, setCampaignsSearch] = useState("");
+
+  // Filter states
+  const [registrationsFilters, setRegistrationsFilters] = useState({});
+  const [postsFilters, setPostsFilters] = useState({});
+  const [spinsFilters, setSpinsFilters] = useState({});
+  const [campaignsFilters, setCampaignsFilters] = useState({});
+
   const weekDays = getWeekDays(baseDate);
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  // Available filters for each section
+  const availableFilters = {
+    registrations: {
+      username: {
+        label: "Username",
+        type: "text",
+        placeholder: "Filter by username"
+      }
+    },
+    posts: {
+      likesMin: {
+        label: "Min Likes",
+        type: "number",
+        placeholder: "Minimum likes"
+      },
+      likesMax: {
+        label: "Max Likes",
+        type: "number",
+        placeholder: "Maximum likes"
+      }
+    },
+    spins: {
+      coinsMin: {
+        label: "Min Coins",
+        type: "number",
+        placeholder: "Minimum coins"
+      },
+      coinsMax: {
+        label: "Max Coins",
+        type: "number",
+        placeholder: "Maximum coins"
+      }
+    },
+    campaigns: {
+      status: {
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "approved", label: "Approved" },
+          { value: "pending", label: "Pending" },
+          { value: "rejected", label: "Rejected" }
+        ]
+      },
+      amountMin: {
+        label: "Min Amount",
+        type: "number",
+        placeholder: "Minimum amount"
+      },
+      amountMax: {
+        label: "Max Amount",
+        type: "number",
+        placeholder: "Maximum amount"
+      }
+    }
+  };
 
   // Fetch weekly data
   const fetchWeeklyData = useCallback(async () => {
@@ -341,6 +615,114 @@ const Calendar = ({ darkMode = false }) => {
     setSelectedDate(todayLocal);
   };
 
+  // Filter and search functions
+  const filterRegistrations = (registrations) => {
+    if (!registrations) return [];
+    
+    return registrations.filter(reg => {
+      // Search filter
+      if (registrationsSearch) {
+        const searchLower = registrationsSearch.toLowerCase();
+        const matchesSearch = 
+          (reg.fullName?.toLowerCase().includes(searchLower)) ||
+          (reg.email?.toLowerCase().includes(searchLower)) ||
+          (reg.profile?.username?.toLowerCase().includes(searchLower));
+        
+        if (!matchesSearch) return false;
+      }
+
+      // Filter by username
+      if (registrationsFilters.username && reg.profile?.username) {
+        if (!reg.profile.username.toLowerCase().includes(registrationsFilters.username.toLowerCase())) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  };
+
+  const filterPosts = (posts) => {
+    if (!posts) return [];
+    
+    return posts.filter(post => {
+      // Search filter
+      if (postsSearch) {
+        const searchLower = postsSearch.toLowerCase();
+        const matchesSearch = 
+          (post.userName?.toLowerCase().includes(searchLower)) ||
+          (post.description?.toLowerCase().includes(searchLower));
+        
+        if (!matchesSearch) return false;
+      }
+
+      // Filter by likes
+      const likes = post.likesCount || 0;
+      if (postsFilters.likesMin && likes < parseInt(postsFilters.likesMin)) return false;
+      if (postsFilters.likesMax && likes > parseInt(postsFilters.likesMax)) return false;
+
+      return true;
+    });
+  };
+
+  const filterSpins = (spins) => {
+    if (!spins) return [];
+    
+    return spins.filter(spin => {
+      // Search filter
+      if (spinsSearch) {
+        const searchLower = spinsSearch.toLowerCase();
+        const matchesSearch = 
+          (spin.userId?.fullName?.toLowerCase().includes(searchLower)) ||
+          (spin.reward?.toLowerCase().includes(searchLower));
+        
+        if (!matchesSearch) return false;
+      }
+
+      // Filter by coins
+      const coins = spin.coins || 0;
+      if (spinsFilters.coinsMin && coins < parseInt(spinsFilters.coinsMin)) return false;
+      if (spinsFilters.coinsMax && coins > parseInt(spinsFilters.coinsMax)) return false;
+
+      return true;
+    });
+  };
+
+  const filterCampaigns = (campaigns) => {
+    if (!campaigns) return [];
+    
+    return campaigns.filter(campaign => {
+      // Search filter
+      if (campaignsSearch) {
+        const searchLower = campaignsSearch.toLowerCase();
+        const matchesSearch = 
+          (campaign.fullName?.toLowerCase().includes(searchLower)) ||
+          (campaign.email?.toLowerCase().includes(searchLower)) ||
+          (campaign.link?.toLowerCase().includes(searchLower));
+        
+        if (!matchesSearch) return false;
+      }
+
+      // Filter by status
+      if (campaignsFilters.status && campaign.adminApprovalStatus !== campaignsFilters.status) {
+        return false;
+      }
+
+      // Filter by amount
+      const amount = campaign.purchasedPackage?.price || 0;
+      if (campaignsFilters.amountMin && amount < parseInt(campaignsFilters.amountMin)) return false;
+      if (campaignsFilters.amountMax && amount > parseInt(campaignsFilters.amountMax)) return false;
+
+      return true;
+    });
+  };
+
+  // Paginate data
+  const paginateData = (data, page) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  };
 
   // Get stats for selected date
   const getStatsForDate = (dateStr) => {
@@ -534,9 +916,6 @@ const Calendar = ({ darkMode = false }) => {
                   <h2 className={`text-lg md:text-xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
                     {monthYear}
                   </h2>
-                  {/* <span className={`text-sm ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
-                    Week of {formatDate(weekDays[0])}
-                  </span> */}
                 </div>
 
                 <button
@@ -677,17 +1056,29 @@ const Calendar = ({ darkMode = false }) => {
                   Detailed Breakdown
                 </h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                <div className="space-y-8">
                   {/* Registrations */}
                   {dailyDetails.details.registrations?.length > 0 && (
                     <div>
-                      <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"
-                        }`}>
-                        <UserPlus className="w-5 h-5" />
-                        New Registrations ({dailyDetails.details.registrations.length})
-                      </h3>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                        <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                          <UserPlus className="w-5 h-5" />
+                          New Registrations ({dailyDetails.details.registrations.length})
+                        </h3>
+                      </div>
+                      
+                      <SearchFilterBar
+                        section="registrations"
+                        searchQuery={registrationsSearch}
+                        onSearchChange={setRegistrationsSearch}
+                        filters={registrationsFilters}
+                        onFilterChange={(key, value) => setRegistrationsFilters(prev => ({ ...prev, [key]: value }))}
+                        availableFilters={availableFilters.registrations}
+                        darkMode={darkMode}
+                      />
+
                       <div className="space-y-3">
-                        {dailyDetails.details.registrations.map((user, index) => (
+                        {paginateData(filterRegistrations(dailyDetails.details.registrations), registrationsPage).map((user, index) => (
                           <div
                             key={index}
                             className={`p-4 rounded-xl transition-all hover:scale-[1.01] ${darkMode
@@ -721,19 +1112,38 @@ const Calendar = ({ darkMode = false }) => {
                           </div>
                         ))}
                       </div>
+
+                      <Pagination
+                        currentPage={registrationsPage}
+                        totalPages={Math.ceil(filterRegistrations(dailyDetails.details.registrations).length / itemsPerPage)}
+                        onPageChange={setRegistrationsPage}
+                        darkMode={darkMode}
+                      />
                     </div>
                   )}
 
                   {/* Posts */}
                   {dailyDetails.details.posts?.length > 0 && (
                     <div>
-                      <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"
-                        }`}>
-                        <BarChart3 className="w-5 h-5" />
-                        Posts Created ({dailyDetails.details.posts.length})
-                      </h3>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                        <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                          <BarChart3 className="w-5 h-5" />
+                          Posts Created ({dailyDetails.details.posts.length})
+                        </h3>
+                      </div>
+                      
+                      <SearchFilterBar
+                        section="posts"
+                        searchQuery={postsSearch}
+                        onSearchChange={setPostsSearch}
+                        filters={postsFilters}
+                        onFilterChange={(key, value) => setPostsFilters(prev => ({ ...prev, [key]: value }))}
+                        availableFilters={availableFilters.posts}
+                        darkMode={darkMode}
+                      />
+
                       <div className="space-y-3">
-                        {dailyDetails.details.posts.slice(0, 3).map((post, index) => (
+                        {paginateData(filterPosts(dailyDetails.details.posts), postsPage).map((post, index) => (
                           <div
                             key={index}
                             className={`p-4 rounded-xl transition-all hover:scale-[1.01] ${darkMode
@@ -772,26 +1182,39 @@ const Calendar = ({ darkMode = false }) => {
                             </div>
                           </div>
                         ))}
-                        {dailyDetails.details.posts.length > 3 && (
-                          <p className={`text-sm text-center mt-4 ${darkMode ? "text-gray-400" : "text-gray-600"
-                            }`}>
-                            +{dailyDetails.details.posts.length - 3} more posts
-                          </p>
-                        )}
                       </div>
+
+                      <Pagination
+                        currentPage={postsPage}
+                        totalPages={Math.ceil(filterPosts(dailyDetails.details.posts).length / itemsPerPage)}
+                        onPageChange={setPostsPage}
+                        darkMode={darkMode}
+                      />
                     </div>
                   )}
 
                   {/* Spins */}
                   {dailyDetails.details.spins?.length > 0 && (
-                    <div className="lg:col-span-2">
-                      <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"
-                        }`}>
-                        <Coins className="w-5 h-5" />
-                        Spins Completed ({dailyDetails.details.spins.length})
-                      </h3>
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                        <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                          <Coins className="w-5 h-5" />
+                          Spins Completed ({dailyDetails.details.spins.length})
+                        </h3>
+                      </div>
+                      
+                      <SearchFilterBar
+                        section="spins"
+                        searchQuery={spinsSearch}
+                        onSearchChange={setSpinsSearch}
+                        filters={spinsFilters}
+                        onFilterChange={(key, value) => setSpinsFilters(prev => ({ ...prev, [key]: value }))}
+                        availableFilters={availableFilters.spins}
+                        darkMode={darkMode}
+                      />
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                        {dailyDetails.details.spins.map((spin, index) => (
+                        {paginateData(filterSpins(dailyDetails.details.spins), spinsPage).map((spin, index) => (
                           <div
                             key={index}
                             className={`p-4 rounded-xl transition-all hover:scale-[1.01] ${darkMode
@@ -816,19 +1239,38 @@ const Calendar = ({ darkMode = false }) => {
                           </div>
                         ))}
                       </div>
+
+                      <Pagination
+                        currentPage={spinsPage}
+                        totalPages={Math.ceil(filterSpins(dailyDetails.details.spins).length / itemsPerPage)}
+                        onPageChange={setSpinsPage}
+                        darkMode={darkMode}
+                      />
                     </div>
                   )}
 
                   {/* Campaigns */}
                   {dailyDetails.details.campaigns?.length > 0 && (
-                    <div className="lg:col-span-2">
-                      <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"
-                        }`}>
-                        <Megaphone className="w-5 h-5" />
-                        Campaigns ({dailyDetails.details.campaigns.length})
-                      </h3>
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                        <h3 className={`text-lg font-semibold flex items-center gap-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                          <Megaphone className="w-5 h-5" />
+                          Campaigns ({dailyDetails.details.campaigns.length})
+                        </h3>
+                      </div>
+                      
+                      <SearchFilterBar
+                        section="campaigns"
+                        searchQuery={campaignsSearch}
+                        onSearchChange={setCampaignsSearch}
+                        filters={campaignsFilters}
+                        onFilterChange={(key, value) => setCampaignsFilters(prev => ({ ...prev, [key]: value }))}
+                        availableFilters={availableFilters.campaigns}
+                        darkMode={darkMode}
+                      />
+
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {dailyDetails.details.campaigns.map((campaign, index) => (
+                        {paginateData(filterCampaigns(dailyDetails.details.campaigns), campaignsPage).map((campaign, index) => (
                           <div
                             key={index}
                             className={`p-4 rounded-xl border ${campaign.adminApprovalStatus === 'approved'
@@ -872,6 +1314,13 @@ const Calendar = ({ darkMode = false }) => {
                           </div>
                         ))}
                       </div>
+
+                      <Pagination
+                        currentPage={campaignsPage}
+                        totalPages={Math.ceil(filterCampaigns(dailyDetails.details.campaigns).length / itemsPerPage)}
+                        onPageChange={setCampaignsPage}
+                        darkMode={darkMode}
+                      />
                     </div>
                   )}
                 </div>

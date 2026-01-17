@@ -941,7 +941,7 @@ const ContentCard = ({ item, theme, getTimeAgo, onAction, onSelect, compact }) =
             <div className={`p-3 md:p-4 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-                        <div className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center`}>
+                        <div className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-indigo-700' : 'bg-indigo-700'} flex items-center justify-center`}>
                             {isPost && data.userId?.profile?.image ? (
                                 <img
                                     src={data.userId.profile.image}
@@ -949,7 +949,9 @@ const ContentCard = ({ item, theme, getTimeAgo, onAction, onSelect, compact }) =
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <User size={compact ? 16 : 20} className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} />
+                                <p className="w-full h-full flex items-center justify-center text-white font-semibold text-lg md:text-xl">
+                                    {data.userId.fullName?.charAt(0).toUpperCase()}
+                                </p>
                             )}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -1100,7 +1102,7 @@ const ContentCardList = ({ item, theme, getTimeAgo, onAction, onSelect }) => {
             <div className="flex items-center p-4">
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className={`w-10 h-10 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                        <div className={`w-10 h-10 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-indigo-700' : 'bg-indigo-700'}`}>
                             {isPost && data.userId?.profile?.image ? (
                                 <img
                                     src={data.userId.profile.image}
@@ -1108,7 +1110,9 @@ const ContentCardList = ({ item, theme, getTimeAgo, onAction, onSelect }) => {
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <User size={20} className="m-auto mt-2" />
+                                <p className="w-full h-full flex items-center justify-center text-white font-semibold text-lg md:text-xl">
+                                    {data.userId.fullName?.charAt(0).toUpperCase()}
+                                </p>
                             )}
                         </div>
                         <div>
@@ -1185,7 +1189,9 @@ const PostDetails = ({ post, theme }) => {
                                 className="w-full h-full object-cover"
                             />
                         ) : (
-                            <User size={32} className="m-auto mt-4" />
+                            <p className="w-full h-full flex items-center justify-center text-gray-400">
+                                {post.userId.fullName?.charAt(0).toUpperCase()}
+                            </p>
                         )}
                     </div>
                     <div>

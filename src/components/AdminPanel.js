@@ -26,6 +26,9 @@ import UserPayments from '../pages/users/UserPayments';
 import Rooms from '../pages/rooms/Rooms';
 import CampaignPayments from '../pages/payments/CampaignPayments';
 import Revenue from '../pages/Revenue';
+import Notifications from '../pages/Notifications';
+import SingleCampaignPayment from '../pages/payments/SingleCampaignPayment';
+import CalendarFilter from '../pages/CalendarFilter';
 
 const AdminPanel = () => {
     const navigate = useNavigate();
@@ -145,10 +148,14 @@ const AdminPanel = () => {
                             <Route path="/coin-payments" element={<CoinPayments darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="/payment/:id" element={<PaymentDetails darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="/campaign-payments" element={<CampaignPayments darkMode={darkMode} collapsed={collapsed} />} />
+                            <Route path="/campaign-payment/:id" element={<SingleCampaignPayment darkMode={darkMode} collapsed={collapsed} />} />
 
                             <Route path="/revenue" element={<Revenue darkMode={darkMode} collapsed={collapsed} />} />
 
+                            <Route path='/notifications' element={<Notifications darkMode={darkMode} collapsed={collapsed} />}/>
+
                             <Route path='/calender' element={<Calender darkMode={darkMode} collapsed={collapsed} />}/>
+                            <Route path="/calendarfilter" element={<CalendarFilter darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="/settings" element={<Settings darkMode={darkMode} collapsed={collapsed} />} />
                             <Route path="*" element={<Navigate to="/admin" replace />} />
                         </Routes>

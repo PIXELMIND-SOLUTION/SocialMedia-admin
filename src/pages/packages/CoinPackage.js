@@ -62,11 +62,11 @@ const CoinPackage = ({ darkMode }) => {
   };
 
   /* ================= DELETE ================= */
-  const handleDelete = async (id) => {
+  const handleDelete = async (packageId) => {
     if (!window.confirm("Delete this package?")) return;
 
     try {
-      await fetch(`${API_BASE}/package/${id}`, {
+      await fetch(`${API_BASE}/package/${packageId}`, {
         method: "DELETE"
       });
       fetchPackages();

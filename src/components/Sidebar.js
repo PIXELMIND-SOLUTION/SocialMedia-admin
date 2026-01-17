@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FaTachometerAlt, 
-  FaUsers, 
-  FaBox, 
-  FaShoppingCart, 
-  FaChartBar, 
-  FaCog, 
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaBox,
+  FaShoppingCart,
+  FaChartBar,
+  FaCog,
   FaFileInvoiceDollar,
   FaCalendarAlt,
   FaLifeRing,
@@ -18,10 +18,11 @@ import {
   FaChevronRight,
   FaRegQuestionCircle,
   FaDownload,
-  FaSquare
+  FaSquare,
+  FaBell
 } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollapsed, onNavigate }) => {
   const location = useLocation();
@@ -32,6 +33,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
     analytics: false,
     settings: false
   });
+  const navigate = useNavigate();
 
   // Update active item based on route
   useEffect(() => {
@@ -65,10 +67,10 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
     { id: 'dashboard', icon: <FaTachometerAlt />, text: 'Dashboard', path: '/' },
     { id: 'users', icon: <FaUsers />, text: 'Users', path: '/users' },
     { id: 'posts', icon: <FaLifeRing />, text: 'Posts', path: '/posts' },
-    { 
-      id: 'Packages', 
-      icon: <FaIdBadge />, 
-      text: 'Packages', 
+    {
+      id: 'Packages',
+      icon: <FaIdBadge />,
+      text: 'Packages',
       path: '/packages',
       subItems: [
         { id: 'coin package', text: 'Coin Packages', path: '/packages' },
@@ -77,10 +79,10 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
     },
     { id: 'spins', icon: <FaShoppingCart />, text: 'Spins', path: '/spins' },
     { id: 'Download Coins', icon: <FaDownload />, text: 'Download Coins', path: '/download' },
-    { 
-      id: 'Campaigns', 
-      icon: <FaRegQuestionCircle />, 
-      text: 'Campaigns', 
+    {
+      id: 'Campaigns',
+      icon: <FaRegQuestionCircle />,
+      text: 'Campaigns',
       path: '/campaigns',
       subItems: [
         { id: 'all campaigns', text: 'All Campaigns', path: '/campaigns' },
@@ -88,28 +90,41 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
         { id: 'rejected campaigns', text: 'Rejected Campaigns', path: '/rejected-campaigns' }
       ]
     },
-    { id: 'Rooms', icon: <FaSquare />, text: 'Rooms', path: '/rooms',
+    {
+      id: 'Rooms', icon: <FaSquare />, text: 'Rooms', path: '/rooms',
       subItems: [
         { id: 'Rooms', text: 'Rooms', path: '/rooms' }
       ]
-     },
-    { id: 'calendar', icon: <FaCalendarAlt />, text: 'Calendar', path: '/calender' },
-    { id: 'payments', icon: <FaFileInvoiceDollar />, text: 'Payments', path: '/coin-payments',
+    },
+    { id: 'calendar', icon: <FaCalendarAlt />, text: 'Calendar', path: '/calender',
+      subItems: [
+        { id: 'calendar', text: 'Calendar', path: '/calendar' },
+        { id: 'calendarFilter', text: 'Calendar Filter', path: '/calendarfilter' }
+      ]
+    },
+    {
+      id: 'payments', icon: <FaFileInvoiceDollar />, text: 'Payments', path: '/coin-payments',
       subItems: [
         { id: 'Coin Payments', text: 'Coin Payments', path: '/coin-payments' },
         { id: 'Campaign Payments', text: 'Campaign Payments', path: '/campaign-payments' }
       ]
-     },
-     { 
-      id: 'revenue analytics', 
-      icon: <FaCog />, 
-      text: 'Revenue Analytics', 
+    },
+    {
+      id: 'revenue analytics',
+      icon: <FaCog />,
+      text: 'Revenue Analytics',
       path: '/revenue'
     },
-    { 
-      id: 'settings', 
-      icon: <FaCog />, 
-      text: 'Settings', 
+    {
+      id: 'notifications',
+      icon: <FaBell />,
+      text: 'Notifications',
+      path: '/notifications'
+    },
+    {
+      id: 'settings',
+      icon: <FaCog />,
+      text: 'Settings',
       path: '/settings'
     }
   ];
@@ -130,7 +145,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
   const handleSubItemClick = (subItem, parentId) => {
     onNavigate(subItem.path);
     setActiveItem(subItem.id);
-    
+
     // When in collapsed mode, close sidebar after navigation on mobile
     if (window.innerWidth < 768) {
       toggleSidebar();
@@ -138,8 +153,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
   };
 
   const handleLogout = () => {
-    // Handle logout logic here
-    localStorage.removeItem('authToken');
+    sessionStorage.clear();
     window.location.href = '/';
   };
 
@@ -155,12 +169,12 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
     <>
       {/* Mobile Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
-      
+
       {/* Sidebar */}
       <aside className={`
         ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}
@@ -191,14 +205,14 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
               </div>
             </div>
           ) : (
-            <div 
+            <div
               className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center cursor-pointer"
               onClick={() => onNavigate('/')}
             >
               <span className="text-white font-bold">A</span>
             </div>
           )}
-          
+
           {/* Close Button (Mobile only) */}
           <button
             onClick={toggleSidebar}
@@ -245,25 +259,25 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
                   >
                     <div className="flex items-center">
                       <span className={`${collapsed ? 'text-xl' : 'text-lg'}`}>{item.icon}</span>
-                      
+
                       {/* Text - hidden when collapsed */}
                       {!collapsed && (
                         <span className="ml-3 font-medium">{item.text}</span>
                       )}
                     </div>
-                    
+
                     {/* Submenu arrow (only when not collapsed) */}
                     {!collapsed && item.subItems && (
                       <span className="text-xs ml-2">
                         {openSubmenus[item.id] ? <FaChevronDown /> : <FaChevronRight />}
                       </span>
                     )}
-                    
+
                     {/* Active indicator */}
                     {(activeItem === item.id || isSubItemActive(item.id, item.subItems)) && !collapsed && (
                       <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                     )}
-                    
+
                     {/* Tooltip for collapsed state */}
                     {collapsed && hoveredItem === item.id && (
                       <div className={`
@@ -275,14 +289,14 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
                       </div>
                     )}
                   </button>
-                  
+
                   {/* Sub-items (only when not collapsed and menu is open) */}
                   {!collapsed && item.subItems && openSubmenus[item.id] && (
                     <div className="mt-1 ml-6 pl-3 border-l-2 border-gray-200 dark:border-gray-700 space-y-1">
                       {item.subItems.map((subItem) => {
-                        const isActive = location.pathname === subItem.path || 
-                                        location.pathname.includes(subItem.path.split('/')[1]);
-                        
+                        const isActive = location.pathname === subItem.path ||
+                          location.pathname.includes(subItem.path.split('/')[1]);
+
                         return (
                           <button
                             key={subItem.id}
@@ -317,7 +331,10 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
           {/* Logout */}
           <div className="relative">
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                navigate('/');
+                sessionStorage.clear();
+              }}
               className={`
                 w-full flex items-center ${collapsed ? 'justify-center' : 'justify-start'} 
                 p-3 rounded-lg transition-all duration-200
@@ -329,7 +346,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
             >
               <FaSignOutAlt className={`${collapsed ? 'text-xl' : 'text-lg'}`} />
               {!collapsed && <span className="ml-3 font-medium">Logout</span>}
-              
+
               {/* Tooltip for collapsed state */}
               {collapsed && hoveredItem === 'logout' && (
                 <div className={`
@@ -345,7 +362,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
         </nav>
 
         {/* User Profile */}
-        <div className={`
+        {/* <div className={`
           p-3 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}
           ${collapsed ? 'text-center' : ''}
         `}>
@@ -360,8 +377,8 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
                 onClick={() => onNavigate('/profile')}
               />
               <div className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+
               
-              {/* Profile tooltip */}
               {hoveredItem === 'profile' && (
                 <div className={`
                   absolute left-full bottom-0 ml-2 px-3 py-2 rounded-md shadow-lg z-50
@@ -389,7 +406,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, collapsed, toggleCollap
               </div>
             </div>
           )}
-        </div>
+        </div> */}
       </aside>
 
       {/* Floating Toggle Button for Mobile */}

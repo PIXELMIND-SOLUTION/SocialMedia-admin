@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 const API_BASE = "https://apisocial.atozkeysolution.com/api";
 
+const PACKAGE_OPTIONS = ["Basic", "Standard", "Premium", "Enterprise"];
+
 const CampaignPackage = ({ darkMode }) => {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -136,14 +138,29 @@ const CampaignPackage = ({ darkMode }) => {
           darkMode ? "bg-gray-800 text-white" : "bg-white"
         }`}
       >
-        <Input label="Package Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
+        {/* PACKAGE NAME DROPDOWN */}
+        <select
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+          className={`px-4 py-2 rounded border focus:outline-none ${
+            darkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white"
+          }`}
+        >
+          <option value="">Select Package</option>
+          {PACKAGE_OPTIONS.map((pkg) => (
+            <option key={pkg} value={pkg}>
+              {pkg}
+            </option>
+          ))}
+        </select>
+
         <Input label="Price" type="number" value={form.price} onChange={(v) => setForm({ ...form, price: v })} />
         <Input label="Duration (Hours)" type="number" value={form.durationHours} onChange={(v) => setForm({ ...form, durationHours: v })} />
         <Input label="Posts Interval" type="number" value={form.postsInterval} onChange={(v) => setForm({ ...form, postsInterval: v })} />
         <Input label="Target Users" type="number" value={form.targetUsers} onChange={(v) => setForm({ ...form, targetUsers: v })} />
         <Input label="Priority" type="number" value={form.priority} onChange={(v) => setForm({ ...form, priority: v })} />
 
-        {/* CONTENT TAGS */}
         <TagInput
           label="Content"
           value={contentInput}
@@ -153,7 +170,6 @@ const CampaignPackage = ({ darkMode }) => {
           onRemove={(v) => removeTag("content", v)}
         />
 
-        {/* FEATURES TAGS */}
         <TagInput
           label="Features"
           value={featureInput}
@@ -180,7 +196,7 @@ const CampaignPackage = ({ darkMode }) => {
         <table className="w-full text-sm min-w-[900px]">
           <thead className={darkMode ? "bg-gray-700 text-white" : "bg-gray-100"}>
             <tr>
-              <th className="p-3 ">Name</th>
+              <th className="p-3">Name</th>
               <th className="p-3">Price</th>
               <th className="p-3">Duration</th>
               <th className="p-3">Target</th>
@@ -189,7 +205,7 @@ const CampaignPackage = ({ darkMode }) => {
               <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className={darkMode ? "bg-gray-700 text-white fw-bold" : "bg-gray-100 fw-bold"}>
+          <tbody className={darkMode ? "bg-gray-700 text-white" : "bg-gray-100"}>
             {packages.map((pkg) => (
               <tr key={pkg._id} className="border-t text-center">
                 <td className="p-3">{pkg.name}</td>

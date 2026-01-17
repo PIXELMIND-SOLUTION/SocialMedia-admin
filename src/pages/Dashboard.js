@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FaUsers, 
-  FaDollarSign, 
+import {
+  FaUsers,
+  FaDollarSign,
   FaChartLine,
   FaArrowUp,
   FaArrowDown,
@@ -27,24 +27,27 @@ import {
   FaAward,
   FaStar,
   FaFire,
-  FaTrophy
+  FaTrophy,
+  FaInfo,
+  FaInfoCircle
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { 
-  LineChart, 
-  Line, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell
 } from 'recharts';
+import axios from 'axios';
 
 const Dashboard = ({ darkMode }) => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -92,7 +95,7 @@ const Dashboard = ({ darkMode }) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
@@ -112,13 +115,13 @@ const Dashboard = ({ darkMode }) => {
       { icon: <FaFire className="text-red-500" />, color: 'bg-gradient-to-r from-red-500 to-red-600' },
       { icon: <FaTrophy className="text-indigo-500" />, color: 'bg-gradient-to-r from-indigo-500 to-indigo-600' }
     ];
-    
+
     return badges[index] || badges[9];
   };
 
   const getTopPosts = () => {
     if (!dashboardData) return [];
-    
+
     if (postViewType === 'byLikes') {
       return dashboardData.topPosts.byLikes.slice(0, 10);
     } else {
@@ -142,6 +145,60 @@ const Dashboard = ({ darkMode }) => {
   ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+
+  const [notifications, setNotifications] = useState([]);
+
+  const adminEmail = JSON.parse(sessionStorage.getItem("adminemail"));
+  const role = JSON.parse(sessionStorage.getItem("role"));
+
+
+  // 🔹 Fetch Notifications API
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        "https://apisocial.atozkeysolution.com/api/allnotifications"
+      );
+
+      if (res.data.success) {
+        const formatted = res.data.notifications.map((item) => ({
+          id: item._id,
+          text: item.title,
+          message: item.message,
+          unread: !item.read,
+          time: formatTime(item.createdAt),
+        }));
+
+        setNotifications(formatted);
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Convert ISO date → "x min ago"
+  const formatTime = (date) => {
+    const diff = Math.floor(
+      (new Date() - new Date(date)) / 1000
+    );
+
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const unreadCount = notifications.filter((n) => n.unread).length;
+
+  const handlePostClick = (id) => {
+    navigate(`/admin/user/post/${id}`);
+  };
 
   if (loading) {
     return (
@@ -228,33 +285,7 @@ const Dashboard = ({ darkMode }) => {
             Real-time insights and analytics for your social platform
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <FaRegBell className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} />
-            {dashboardData.notifications.unread > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {dashboardData.notifications.unread}
-              </span>
-            )}
-          </div>
-          {/* <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className={`
-              px-4 py-2 rounded-lg text-sm font-medium
-              ${darkMode 
-                ? 'bg-gray-800 text-white border-gray-700' 
-                : 'bg-white text-gray-800 border-gray-300'
-              }
-              border focus:outline-none focus:ring-2 focus:ring-blue-500
-            `}
-          >
-            <option value="7days">Last 7 days</option>
-            <option value="30days">Last 30 days</option>
-            <option value="90days">Last 90 days</option>
-            <option value="1year">Last year</option>
-          </select> */}
-        </div>
+
       </div>
 
       {/* Stats Grid */}
@@ -285,7 +316,7 @@ const Dashboard = ({ darkMode }) => {
                 {stat.icon}
               </div>
             </div>
-            <div className="flex items-center mt-6">
+            {/* <div className="flex items-center mt-6">
               <span className={`flex items-center ${stat.trend === 'up' ? 'text-green-500' : stat.trend === 'down' ? 'text-red-500' : 'text-yellow-500'}`}>
                 {stat.trend === 'up' ? <FaArrowUp /> : stat.trend === 'down' ? <FaArrowDown /> : <span className="w-4 h-4">•</span>}
                 <span className="ml-1 font-medium">{stat.change}</span>
@@ -293,7 +324,7 @@ const Dashboard = ({ darkMode }) => {
               <span className={`ml-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 from last period
               </span>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
@@ -333,7 +364,7 @@ const Dashboard = ({ darkMode }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
                 <XAxis dataKey="name" stroke={darkMode ? '#9ca3af' : '#6b7280'} />
                 <YAxis stroke={darkMode ? '#9ca3af' : '#6b7280'} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{
                     backgroundColor: darkMode ? '#1f2937' : 'white',
                     borderColor: darkMode ? '#374151' : '#e5e7eb',
@@ -341,17 +372,17 @@ const Dashboard = ({ darkMode }) => {
                   }}
                 />
                 <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="users" 
-                  stroke="#3b82f6" 
+                <Line
+                  type="monotone"
+                  dataKey="users"
+                  stroke="#3b82f6"
                   strokeWidth={2}
                   dot={{ fill: '#3b82f6' }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="posts" 
-                  stroke="#10b981" 
+                <Line
+                  type="monotone"
+                  dataKey="posts"
+                  stroke="#10b981"
                   strokeWidth={2}
                   dot={{ fill: '#10b981' }}
                 />
@@ -386,7 +417,7 @@ const Dashboard = ({ darkMode }) => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
+                <Tooltip
                   formatter={(value) => [value, 'Count']}
                   contentStyle={{
                     backgroundColor: darkMode ? '#1f2937' : 'white',
@@ -448,18 +479,17 @@ const Dashboard = ({ darkMode }) => {
             </div>
             <FaUserPlus className={`text-xl ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
           </div>
-          
+
           <div className="space-y-4">
             {dashboardData.recentActivity.users.slice(0, 5).map((user) => (
-              <div 
+              <div
                 key={user._id}
-                className={`p-4 rounded-xl transition-colors ${
-                  darkMode 
-                    ? 'hover:bg-gray-700 border-gray-700' 
-                    : 'hover:bg-gray-50 border-gray-200'
-                } border`}
+                className={`p-4 rounded-xl transition-colors ${darkMode
+                  ? 'hover:bg-gray-700 border-gray-700'
+                  : 'hover:bg-gray-50 border-gray-200'
+                  } border`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between" onClick={() => navigate(`/admin/users/details/${user._id}`)}>
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
                       {user.fullName.charAt(0)}
@@ -505,16 +535,15 @@ const Dashboard = ({ darkMode }) => {
             </div>
             <FaBullhorn className={`text-xl ${darkMode ? 'text-orange-400' : 'text-orange-600'}`} />
           </div>
-          
+
           <div className="space-y-4">
             {dashboardData.recentActivity.campaigns.map((campaign) => (
-              <div 
+              <div
                 key={campaign._id}
-                className={`p-4 rounded-xl transition-colors ${
-                  darkMode 
-                    ? 'hover:bg-gray-700 border-gray-700' 
-                    : 'hover:bg-gray-50 border-gray-200'
-                } border`}
+                className={`p-4 rounded-xl transition-colors ${darkMode
+                  ? 'hover:bg-gray-700 border-gray-700'
+                  : 'hover:bg-gray-50 border-gray-200'
+                  } border`}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -566,32 +595,30 @@ const Dashboard = ({ darkMode }) => {
             </p>
           </div>
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => setPostViewType('byLikes')}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
-                postViewType === 'byLikes' 
-                  ? darkMode 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-blue-500 text-white'
-                  : darkMode 
-                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-              }`}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${postViewType === 'byLikes'
+                ? darkMode
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-500 text-white'
+                : darkMode
+                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                }`}
             >
               <FaHeart className={postViewType === 'byLikes' ? 'text-red-300' : 'text-red-500'} />
               By Likes
             </button>
-            <button 
+            <button
               onClick={() => setPostViewType('byComments')}
-              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
-                postViewType === 'byComments' 
-                  ? darkMode 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-blue-500 text-white'
-                  : darkMode 
-                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-              }`}
+              className={`px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${postViewType === 'byComments'
+                ? darkMode
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-500 text-white'
+                : darkMode
+                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                }`}
             >
               <FaComments className={postViewType === 'byComments' ? 'text-blue-300' : 'text-blue-500'} />
               By Comments
@@ -603,9 +630,9 @@ const Dashboard = ({ darkMode }) => {
           {topPosts.map((post, index) => {
             const badge = getPostBadge(index);
             const isTopThree = index < 3;
-            
+
             return (
-              <div 
+              <div
                 key={post.postId}
                 className={`
                   rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.03] relative
@@ -619,7 +646,7 @@ const Dashboard = ({ darkMode }) => {
                     <span className="text-sm">{index + 1}</span>
                   </div>
                 </div>
-                
+
                 {/* Top 3 Badge */}
                 {isTopThree && (
                   <div className="absolute top-2 right-2 z-10">
@@ -628,11 +655,11 @@ const Dashboard = ({ darkMode }) => {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Post Image */}
                 <div className="relative h-40 overflow-hidden">
-                  <img 
-                    src={post.media} 
+                  <img
+                    src={post.media}
                     alt={post.description}
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -646,18 +673,23 @@ const Dashboard = ({ darkMode }) => {
                       <FaImage className="text-xs" />
                     )}
                   </div>
-                  
+
                 </div>
-                
+
                 {/* Post Content */}
                 <div className="p-4">
-                  <p className={`text-xs mb-2 line-clamp-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {getTimeAgo(post.createdAt)}
-                  </p>
+                  <div className='flex justify-between items-center'>
+                    <p className={`text-xs mb-2 line-clamp-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {getTimeAgo(post.createdAt)}
+                    </p>
+                    <h4 onClick={() => handlePostClick(post.postId)} className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      <FaInfoCircle className="inline mr-1 text-sm text-gray-500" />
+                    </h4>
+                  </div>
                   <p className={`line-clamp-2 mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'} text-sm`}>
                     {post.description || 'No description'}
                   </p>
-                  
+
                   {/* Stats */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -674,34 +706,32 @@ const Dashboard = ({ darkMode }) => {
                         </span>
                       </div>
                     </div>
-                    
+
                     {/* Engagement Score */}
-                    <div className={`px-2 py-1 rounded text-xs font-bold ${
-                      index < 3 
-                        ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300'
-                        : darkMode 
-                          ? 'bg-gray-600 text-gray-300'
-                          : 'bg-gray-200 text-gray-700'
-                    }`}>
+                    <div className={`px-2 py-1 rounded text-xs font-bold ${index < 3
+                      ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300'
+                      : darkMode
+                        ? 'bg-gray-600 text-gray-300'
+                        : 'bg-gray-200 text-gray-700'
+                      }`}>
                       {postViewType === 'byLikes' ? post.likes : post.comments}
                     </div>
                   </div>
-                  
+
                   {/* Rank Indicator */}
                   <div className="mt-3 pt-3 border-t border-gray-700 border-opacity-50">
-                    <div className={`text-xs text-center font-medium px-2 py-1 rounded-full ${
-                      index === 0 
-                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                        : index === 1
+                    <div className={`text-xs text-center font-medium px-2 py-1 rounded-full ${index === 0
+                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                      : index === 1
                         ? 'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200'
                         : index === 2
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
-                        : 'bg-blue-50 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                    }`}>
-                      {index === 0 ? '🏆 Top Performer' : 
-                       index === 1 ? '🥈 Runner Up' : 
-                       index === 2 ? '🥉 Third Place' : 
-                       `Rank #${index + 1}`}
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+                          : 'bg-blue-50 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                      }`}>
+                      {index === 0 ? '🏆 Top Performer' :
+                        index === 1 ? '🥈 Runner Up' :
+                          index === 2 ? '🥉 Third Place' :
+                            `Rank #${index + 1}`}
                     </div>
                   </div>
                 </div>
@@ -709,17 +739,17 @@ const Dashboard = ({ darkMode }) => {
             );
           })}
         </div>
-        
+
         {/* View More Button */}
         <div className="mt-6 text-center">
           <button className={`
             px-6 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mx-auto
-            ${darkMode 
-              ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+            ${darkMode
+              ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
             }
           `}
-          onClick={() => navigate(`/admin/posts`)}
+            onClick={() => navigate(`/admin/posts`)}
           >
             View All Posts
             <FaArrowUp className="transform rotate-90" />
@@ -763,7 +793,7 @@ const Dashboard = ({ darkMode }) => {
           </div>
           <div className="text-center p-4">
             <div className={`text-3xl font-bold mb-2 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-              {dashboardData.notifications.unread}
+              {unreadCount}
             </div>
             <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Unread Notifications

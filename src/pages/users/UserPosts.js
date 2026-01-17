@@ -65,9 +65,8 @@ const AdminUserPosts = ({ darkMode }) => {
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => {
       const text =
-        `${p.description || ""} ${p.userId?.fullName || ""} ${
-          p.userId?.profile?.username || ""
-        }`.toLowerCase();
+        `${p.description || ""} ${p.userId?.fullName || ""} ${p.userId?.profile?.username || ""
+          }`.toLowerCase();
 
       const matchesSearch = text.includes(search.toLowerCase());
 
@@ -96,18 +95,16 @@ const AdminUserPosts = ({ darkMode }) => {
       <button onClick={() => window.history.back()} className="text-white hover:underline bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded">Back</button>
       {/* HEADER */}
       <h1
-        className={`text-2xl font-bold ${
-          darkMode ? "text-white" : "text-gray-800"
-        }`}
+        className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-800"
+          }`}
       >
         User Posts ({filteredPosts.length})
       </h1>
 
       {/* CONTROLS */}
       <div
-        className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl ${
-          darkMode ? "bg-gray-800" : "bg-white shadow"
-        }`}
+        className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl ${darkMode ? "bg-gray-800" : "bg-white shadow"
+          }`}
       >
         <input
           placeholder="Search posts or user..."
@@ -189,11 +186,10 @@ const AdminUserPosts = ({ darkMode }) => {
             <button
               key={i}
               onClick={() => setPage(i + 1)}
-              className={`px-3 py-1 rounded ${
-                page === i + 1
+              className={`px-3 py-1 rounded ${page === i + 1
                   ? "bg-orange-500 text-white"
                   : "border"
-              }`}
+                }`}
             >
               {i + 1}
             </button>
@@ -220,9 +216,8 @@ const PostCard = ({ post, darkMode, onDelete, deleting }) => {
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden shadow transition ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white"
-      }`}
+      className={`relative rounded-xl overflow-hidden shadow transition ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+        }`}
     >
       {/* DELETE */}
       <button
@@ -245,11 +240,16 @@ const PostCard = ({ post, darkMode, onDelete, deleting }) => {
       {/* CONTENT */}
       <div className="p-4 space-y-2">
         <div className="flex items-center gap-3" onClick={() => navigate(`/admin/user/post/${post._id}`)}>
-          <img
-            src={post.userId?.profile?.image || "/assets/images/profile.png"}
-            alt="user"
-            className="w-9 h-9 rounded-full object-cover"
-          />
+          {post.userId?.profile?.image ? (
+            <img
+              src={post.userId?.profile?.image || "/assets/images/profile.png"}
+              alt="user"
+              className="w-9 h-9 rounded-full object-cover"
+            />) : (
+            <div className="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center border-4 border-indigo-500/20">
+              {post.userId?.fullName?.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div>
             <p className="font-semibold text-sm">
               {post.userId?.fullName}

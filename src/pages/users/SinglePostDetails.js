@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  ArrowLeft, 
-  Heart, 
-  MessageCircle, 
-  Calendar, 
-  User, 
-  Image as ImageIcon, 
+import {
+  ArrowLeft,
+  Heart,
+  MessageCircle,
+  Calendar,
+  User,
+  Image as ImageIcon,
   Video as VideoIcon,
   Trash2,
   Loader2,
@@ -31,7 +31,7 @@ const SinglePostDetails = ({ darkMode }) => {
         setError(null);
         const response = await fetch(`http://194.164.148.237:5002/api/post/${postId}`);
         const data = await response.json();
-        
+
         if (data.success) {
           setPost(data.data);
         } else {
@@ -104,11 +104,10 @@ const SinglePostDetails = ({ darkMode }) => {
           </p>
           <button
             onClick={() => navigate(-1)}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              darkMode 
-                ? "bg-gray-800 hover:bg-gray-700 text-white" 
-                : "bg-gray-100 hover:bg-gray-200 text-gray-900"
-            }`}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${darkMode
+              ? "bg-gray-800 hover:bg-gray-700 text-white"
+              : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+              }`}
           >
             ← Go Back
           </button>
@@ -125,11 +124,10 @@ const SinglePostDetails = ({ darkMode }) => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className={`p-2 rounded-xl transition-colors ${
-                darkMode 
-                  ? "bg-gray-800 hover:bg-gray-700 text-gray-300" 
-                  : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-              }`}
+              className={`p-2 rounded-xl transition-colors ${darkMode
+                ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                }`}
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -147,11 +145,10 @@ const SinglePostDetails = ({ darkMode }) => {
           <button
             onClick={handleDeletePost}
             disabled={deleting}
-            className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
-              deleting
-                ? "bg-gray-500 cursor-not-allowed"
-                : "bg-red-600 hover:bg-red-700"
-            } text-white`}
+            className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${deleting
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700"
+              } text-white`}
           >
             {deleting ? (
               <>
@@ -181,9 +178,8 @@ const SinglePostDetails = ({ darkMode }) => {
                     className="w-full h-full object-contain"
                     poster={post.media[currentImageIndex].thumbnail}
                   />
-                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-full flex items-center gap-2 ${
-                    darkMode ? "bg-gray-900/80 text-white" : "bg-white/80 text-gray-900"
-                  }`}>
+                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-full flex items-center gap-2 ${darkMode ? "bg-gray-900/80 text-white" : "bg-white/80 text-gray-900"
+                    }`}>
                     <VideoIcon className="w-4 h-4" />
                     <span className="text-sm font-medium">Video</span>
                   </div>
@@ -195,9 +191,8 @@ const SinglePostDetails = ({ darkMode }) => {
                     alt={`Post media ${currentImageIndex + 1}`}
                     className="w-full h-full object-contain"
                   />
-                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-full flex items-center gap-2 ${
-                    darkMode ? "bg-gray-900/80 text-white" : "bg-white/80 text-gray-900"
-                  }`}>
+                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-full flex items-center gap-2 ${darkMode ? "bg-gray-900/80 text-white" : "bg-white/80 text-gray-900"
+                    }`}>
                     <ImageIcon className="w-4 h-4" />
                     <span className="text-sm font-medium">Image</span>
                   </div>
@@ -213,11 +208,10 @@ const SinglePostDetails = ({ darkMode }) => {
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
-                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                        currentImageIndex === index
-                          ? "border-indigo-500 ring-2 ring-indigo-500/20"
-                          : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                      }`}
+                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${currentImageIndex === index
+                        ? "border-indigo-500 ring-2 ring-indigo-500/20"
+                        : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                        }`}
                     >
                       <img
                         src={media.url}
@@ -229,9 +223,8 @@ const SinglePostDetails = ({ darkMode }) => {
                           <VideoIcon className="w-4 h-4 text-white" />
                         </div>
                       )}
-                      <div className={`absolute bottom-1 right-1 text-xs px-1 rounded ${
-                        darkMode ? "bg-gray-900/80 text-white" : "bg-white/80 text-gray-900"
-                      }`}>
+                      <div className={`absolute bottom-1 right-1 text-xs px-1 rounded ${darkMode ? "bg-gray-900/80 text-white" : "bg-white/80 text-gray-900"
+                        }`}>
                         {index + 1}
                       </div>
                     </button>
@@ -255,23 +248,32 @@ const SinglePostDetails = ({ darkMode }) => {
                 </h2>
                 <button
                   onClick={() => navigate(`/admin/userposts/${post.userId._id}`)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                    darkMode 
-                      ? "bg-gray-700 hover:bg-gray-600 text-gray-300" 
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${darkMode
+                    ? "bg-gray-700 hover:bg-gray-600 text-gray-300"
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    }`}
                 >
                   <ExternalLink className="w-3 h-3" />
                   View All Posts
                 </button>
               </div>
-              
+
               <div className="flex items-center gap-4">
-                <img
-                  src={post.userId.profile?.image || "/assets/images/profile.png"}
-                  alt={post.userId.fullName}
-                  className="w-16 h-16 rounded-full object-cover border-4 border-indigo-500/20"
-                />
+                {post.userId.profile?.image ? (
+                  <img
+                    src={post.userId.profile.image}
+                    alt={post.userId.fullName}
+                    className="w-16 h-16 rounded-full object-cover border-4 border-indigo-500/20"
+                  />
+                ) : (
+                  <div
+                    className="w-16 h-16 rounded-full flex items-center justify-center 
+    bg-indigo-600 text-white font-bold text-xl border-4 border-indigo-500/20"
+                  >
+                    {post.userId.fullName?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+
                 <div>
                   <h3 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
                     {post.userId.fullName}
@@ -291,7 +293,7 @@ const SinglePostDetails = ({ darkMode }) => {
               <h2 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
                 Post Information
               </h2>
-              
+
               <div className="space-y-4">
                 {/* DESCRIPTION */}
                 <div>
@@ -372,19 +374,29 @@ const SinglePostDetails = ({ darkMode }) => {
                 <h2 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
                   Comments ({post.comments.length})
                 </h2>
-                
+
                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                   {post.comments.map((comment, index) => (
-                    <div 
-                      key={comment._id} 
+                    <div
+                      key={comment._id}
                       className={`p-4 rounded-xl ${darkMode ? "bg-gray-800" : "bg-gray-50"}`}
                     >
                       <div className="flex items-start gap-3 mb-3">
-                        <img
-                          src={comment.userId.profile?.image || "/assets/images/profile.png"}
-                          alt={comment.userId.fullName}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
+                        {post.userId.profile?.image ? (
+                          <img
+                            src={post.userId.profile.image}
+                            alt={post.userId.fullName}
+                            className="w-16 h-16 rounded-full object-cover border-4 border-indigo-500/20"
+                          />
+                        ) : (
+                          <div
+                            className="w-16 h-16 rounded-full flex items-center justify-center 
+    bg-indigo-600 text-white font-bold text-xl border-4 border-indigo-500/20"
+                          >
+                            {post.userId.fullName?.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+
                         <div>
                           <h4 className={`font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>
                             {comment.userId.fullName}
@@ -416,7 +428,7 @@ const SinglePostDetails = ({ darkMode }) => {
               <h2 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
                 Technical Details
               </h2>
-              
+
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Post ID</span>
@@ -434,13 +446,12 @@ const SinglePostDetails = ({ darkMode }) => {
                   <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Media Types</span>
                   <div className="flex gap-1">
                     {[...new Set(post.media.map(m => m.type))].map(type => (
-                      <span 
+                      <span
                         key={type}
-                        className={`px-2 py-1 rounded text-xs font-medium ${
-                          type === 'image' 
-                            ? darkMode ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-800"
-                            : darkMode ? "bg-purple-900/30 text-purple-400" : "bg-purple-100 text-purple-800"
-                        }`}
+                        className={`px-2 py-1 rounded text-xs font-medium ${type === 'image'
+                          ? darkMode ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-800"
+                          : darkMode ? "bg-purple-900/30 text-purple-400" : "bg-purple-100 text-purple-800"
+                          }`}
                       >
                         {type}
                       </span>

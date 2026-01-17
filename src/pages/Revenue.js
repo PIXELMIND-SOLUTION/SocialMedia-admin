@@ -38,16 +38,16 @@ const Revenue = ({ darkMode }) => {
   if (loading) {
     return (
       <div
-        className={`p-6 text-center ${
+        className={`p-10 text-center text-sm ${
           darkMode ? "text-gray-300" : "text-gray-600"
         }`}
       >
-        Loading revenue...
+        Loading revenue dashboard...
       </div>
     );
   }
 
-  /* ================= GRAPH DATA ================= */
+  /* ================= DATA ================= */
   const barData = [
     { name: "Coins", revenue: data.totalCoinRevenue },
     { name: "Campaigns", revenue: data.totalCampaignRevenue },
@@ -66,133 +66,111 @@ const Revenue = ({ darkMode }) => {
   const COLORS = ["#22c55e", "#3b82f6"];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* HEADER */}
       <h1
-        className={`text-2xl font-bold ${
-          darkMode ? "text-white" : "text-gray-800"
+        className={`text-3xl font-bold tracking-tight ${
+          darkMode ? "text-white" : "text-gray-900"
         }`}
       >
         Revenue Dashboard
       </h1>
 
       {/* ================= SUMMARY CARDS ================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         {[
           {
             label: "Total Revenue",
             value: `₹${data.totalRevenue}`,
-            color: "from-green-500 to-green-700",
+            gradient: "from-emerald-500 to-emerald-700",
           },
           {
             label: "Coin Revenue",
             value: `₹${data.totalCoinRevenue}`,
-            color: "from-blue-500 to-blue-700",
+            gradient: "from-blue-500 to-blue-700",
           },
           {
             label: "Campaign Revenue",
             value: `₹${data.totalCampaignRevenue}`,
-            color: "from-purple-500 to-purple-700",
+            gradient: "from-violet-500 to-violet-700",
           },
           {
             label: "Total Payments",
             value:
               data.totalCoinPayments + data.totalCampaignPayments,
-            color: "from-orange-500 to-orange-700",
+            gradient: "from-orange-500 to-orange-700",
           },
         ].map((card, i) => (
           <div
             key={i}
-            className={`rounded-xl p-5 text-white bg-gradient-to-r ${card.color} shadow`}
+            className={`relative overflow-hidden rounded-2xl p-6 text-white
+            bg-gradient-to-br ${card.gradient}
+            shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1`}
           >
             <p className="text-sm opacity-90">{card.label}</p>
-            <h2 className="text-2xl font-bold mt-1">
+            <h2 className="text-3xl font-bold mt-2">
               {card.value}
             </h2>
+
+            {/* glow */}
+            <div className="absolute inset-0 bg-white/10 blur-3xl opacity-20" />
           </div>
         ))}
       </div>
 
       {/* ================= GRAPHS ================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* BAR CHART */}
-        <div
-          className={`rounded-xl p-4 shadow ${
-            darkMode ? "bg-gray-900" : "bg-white"
-          }`}
-        >
-          <h2
-            className={`font-semibold mb-3 ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            Revenue Comparison
-          </h2>
-
-          <ResponsiveContainer width="100%" height={260}>
+        <ChartCard title="Revenue Comparison" darkMode={darkMode}>
+          <ResponsiveContainer width="100%" height={280}>
             <BarChart data={barData}>
-              <XAxis dataKey="name" stroke="#888" />
-              <YAxis />
+              <XAxis dataKey="name" stroke="#9ca3af" />
+              <YAxis stroke="#9ca3af" />
               <Tooltip />
-              <Bar dataKey="revenue" fill="#22c55e" radius={6} />
+              <Bar
+                dataKey="revenue"
+                fill="#22c55e"
+                radius={[8, 8, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </ChartCard>
 
         {/* PIE CHART */}
-        <div
-          className={`rounded-xl p-4 shadow ${
-            darkMode ? "bg-gray-900" : "bg-white"
-          }`}
-        >
-          <h2
-            className={`font-semibold mb-3 ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            Revenue Distribution
-          </h2>
-
-          <ResponsiveContainer width="100%" height={260}>
+        <ChartCard title="Revenue Distribution" darkMode={darkMode}>
+          <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
                 data={pieData}
                 dataKey="value"
                 cx="50%"
                 cy="50%"
-                outerRadius={90}
-                label
+                outerRadius={100}
+                innerRadius={60}
+                paddingAngle={4}
               >
                 {pieData.map((_, index) => (
                   <Cell
                     key={index}
-                    fill={COLORS[index % COLORS.length]}
+                    fill={COLORS[index]}
                   />
                 ))}
               </Pie>
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-        </div>
+        </ChartCard>
 
         {/* LINE CHART */}
-        <div
-          className={`rounded-xl p-4 shadow lg:col-span-2 ${
-            darkMode ? "bg-gray-900" : "bg-white"
-          }`}
+        <ChartCard
+          title="Payments Trend"
+          darkMode={darkMode}
+          full
         >
-          <h2
-            className={`font-semibold mb-3 ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
-            Payments Count
-          </h2>
-
-          <ResponsiveContainer width="100%" height={260}>
+          <ResponsiveContainer width="100%" height={300}>
             <LineChart data={lineData}>
-              <XAxis dataKey="name" stroke="#888" />
-              <YAxis />
+              <XAxis dataKey="name" stroke="#9ca3af" />
+              <YAxis stroke="#9ca3af" />
               <Tooltip />
               <Line
                 type="monotone"
@@ -203,10 +181,31 @@ const Revenue = ({ darkMode }) => {
               />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </ChartCard>
       </div>
     </div>
   );
 };
+
+/* ================= REUSABLE CARD ================= */
+
+const ChartCard = ({ title, children, darkMode, full }) => (
+  <div
+    className={`rounded-2xl p-6 shadow-lg transition ${
+      darkMode
+        ? "bg-gray-900 border border-gray-800"
+        : "bg-white border border-gray-200"
+    } ${full ? "xl:col-span-2" : ""}`}
+  >
+    <h2
+      className={`text-lg font-semibold mb-4 ${
+        darkMode ? "text-white" : "text-gray-800"
+      }`}
+    >
+      {title}
+    </h2>
+    {children}
+  </div>
+);
 
 export default Revenue;

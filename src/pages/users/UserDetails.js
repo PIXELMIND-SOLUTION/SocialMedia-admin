@@ -145,19 +145,19 @@ const UserDetails = ({ darkMode }) => {
           </div>
 
           {/* Notifications */}
-          <div className="relative">
+          {/* <div className="relative">
             <FiBell className="text-2xl" />
             {dashboard?.notifications > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
                 {dashboard.notifications}
               </span>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* DASHBOARD STATS */}
         <div className="grid grid-cols-3 gap-4 mb-10">
-          <StatCard label="Posts" value={dashboard?.stats?.posts} icon={<FiImage />} />
+          <StatCard label="Posts" onClick={() => navigate(`/admin/userposts/${user._id}`)} value={dashboard?.stats?.posts} icon={<FiImage />} />
           <StatCard label="Followers" value={dashboard?.stats?.followers} icon={<FiUsers />} />
           <StatCard label="Following" value={dashboard?.stats?.following} icon={<FiUserPlus />} />
         </div>
@@ -213,15 +213,41 @@ const UserDetails = ({ darkMode }) => {
 
 /* ================= SUB COMPONENTS ================= */
 
-const StatCard = ({ label, value, icon }) => (
-  <div className="rounded-2xl p-4 border bg-gradient-to-br from-blue-50 to-indigo-50">
+const StatCard = ({ label, value, icon, darkMode, onClick }) => (
+  <div
+    onClick={onClick}
+    className={`rounded-2xl p-4 border cursor-pointer transition-all
+      ${darkMode
+        ? "bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700 hover:shadow-xl"
+        : "bg-gradient-to-br from-blue-50 to-indigo-50 border-gray-200 hover:shadow-lg"
+      }
+    `}
+  >
     <div className="flex items-center justify-between">
-      <span className="text-sm text-gray-500">{label}</span>
-      {icon}
+      <span
+        className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"
+          }`}
+      >
+        {label}
+      </span>
+
+      <span
+        className={`text-xl ${darkMode ? "text-indigo-400" : "text-indigo-600"
+          }`}
+      >
+        {icon}
+      </span>
     </div>
-    <p className="text-2xl font-bold mt-2">{value}</p>
+
+    <p
+      className={`text-2xl font-bold mt-2 ${darkMode ? "text-white" : "text-gray-900"
+        }`}
+    >
+      {value ?? 0}
+    </p>
   </div>
 );
+
 
 const FollowCard = ({ title, list, search, setSearch, darkMode, navigate }) => (
   <div
@@ -250,11 +276,20 @@ const FollowCard = ({ title, list, search, setSearch, darkMode, navigate }) => (
           className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer
             ${darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white hover:bg-gray-100"}`}
         >
-          <img
-            src={u.profile?.image}
-            alt=""
-            className="w-9 h-9 rounded-full object-cover"
-          />
+          {u.profile?.image ? (
+            <img
+              src={u.profile.image}
+              alt={u.fullName}
+              className="w-9 h-9 rounded-full object-cover border-4 border-indigo-500/20"
+            />
+          ) : (
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center 
+    bg-indigo-600 text-white font-bold text-xl border-4 border-indigo-500/20"
+            >
+              {u.fullName?.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div>
             <p className="text-sm font-medium">{u.fullName}</p>
             <p className="text-xs text-gray-500">@{u.profile?.username}</p>

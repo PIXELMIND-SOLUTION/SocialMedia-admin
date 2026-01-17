@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZES = [5, 10, 20];
 const PAYMENT_TABS = ["completed", "pending"];
@@ -18,6 +19,8 @@ const CampaignPayments = ({ darkMode }) => {
   const [maxPrice, setMaxPrice] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+
+  const navigate = useNavigate();
 
   /* ===== Pagination ===== */
   const [pageSize, setPageSize] = useState(10);
@@ -412,6 +415,12 @@ const CampaignPayments = ({ darkMode }) => {
                     </span>
                   </td>
                   <td className="px-4 py-3">
+                    <button
+                      onClick={()=> navigate(`/admin/campaign-payment/${item._id}`)}
+                      className="px-3 py-1 mr-2 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded"
+                    >
+                      View
+                    </button>
                     <button
                       disabled={deletingId === item._id}
                       onClick={() => deleteCampaign(item._id)}

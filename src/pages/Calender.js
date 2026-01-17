@@ -66,7 +66,7 @@ const getMonthYear = (date) => {
 };
 
 /* ================= API CONFIG ================= */
-const API_BASE_URL = "http://194.164.148.237:5002";
+const API_BASE_URL = "https://apisocial.atozkeysolution.com";
 
 /* ================= PAGINATION COMPONENT ================= */
 const Pagination = ({ currentPage, totalPages, onPageChange, darkMode }) => {

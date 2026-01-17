@@ -19,7 +19,7 @@ import {
 /* ===============================
    API CONFIG
 ================================ */
-const API_BASE = "http://194.164.148.237:5002/api";
+const API_BASE = "https://apisocial.atozkeysolution.com/api";
 
 /* ===============================
    MAIN COMPONENT

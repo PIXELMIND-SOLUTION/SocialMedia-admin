@@ -29,7 +29,7 @@ const SinglePostDetails = ({ darkMode }) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`http://194.164.148.237:5002/api/post/${postId}`);
+        const response = await fetch(`https://apisocial.atozkeysolution.com/api/post/${postId}`);
         const data = await response.json();
 
         if (data.success) {

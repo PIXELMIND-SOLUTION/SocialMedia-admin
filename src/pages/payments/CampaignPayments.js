@@ -216,7 +216,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         />
 
@@ -226,7 +226,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         >
           <option value="all">All Approval</option>
@@ -241,7 +241,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         >
           <option value="all">All Packages</option>
@@ -260,7 +260,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         />
 
@@ -272,7 +272,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         />
 
@@ -283,7 +283,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         />
 
@@ -294,7 +294,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         />
 
@@ -324,7 +324,7 @@ const CampaignPayments = ({ darkMode }) => {
           className={`px-3 py-2 rounded border ${
             darkMode
               ? "bg-gray-800 border-gray-700 text-white"
-              : "bg-white border-gray-300"
+              : "bg-white text-gray-700 border-gray-300"
           }`}
         >
           {PAGE_SIZES.map((s) => (
@@ -338,7 +338,7 @@ const CampaignPayments = ({ darkMode }) => {
       {/* TABLE */}
       <div
         className={`overflow-x-auto rounded-xl shadow ${
-          darkMode ? "bg-gray-900" : "bg-white"
+          darkMode ? "bg-gray-900" : "bg-white text-gray-700"
         }`}
       >
         {loading ? (
@@ -349,7 +349,7 @@ const CampaignPayments = ({ darkMode }) => {
               className={`${
                 darkMode
                   ? "bg-gray-800 text-gray-300"
-                  : "bg-gray-100"
+                  : "bg-gray-100 text-gray-700"
               }`}
             >
               <tr>
@@ -451,17 +451,17 @@ const CampaignPayments = ({ darkMode }) => {
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((p) => p - 1)}
-          className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+          className="px-3 py-1 rounded text-gray-700 bg-gray-300 disabled:opacity-50"
         >
           Prev
         </button>
-        <span className="px-4 py-1 rounded bg-gray-200">
+        <span className="px-4 py-1 rounded text-gray-700 bg-gray-200">
           Page {currentPage} of {totalPages}
         </span>
         <button
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((p) => p + 1)}
-          className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+          className="px-3 py-1 rounded text-gray-700 bg-gray-300 disabled:opacity-50"
         >
           Next
         </button>

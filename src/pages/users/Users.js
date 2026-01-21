@@ -1,6 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { FiEdit, FiTrash2, FiSearch, FiChevronLeft, FiChevronRight, FiInfo, FiImage, FiDollarSign } from "react-icons/fi";
+import {
+  FiEdit,
+  FiTrash2,
+  FiSearch,
+  FiChevronLeft,
+  FiChevronRight,
+  FiInfo,
+  FiImage,
+  FiDollarSign,
+} from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { FaCoins } from "react-icons/fa";
 import WalletAndSpins from "./WalletAndSpins";
@@ -14,14 +23,10 @@ const Users = ({ darkMode }) => {
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState(null);
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
 
   const navigate = useNavigate();
 
-  // =============================
-  // FETCH USERS
-  // =============================
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -40,9 +45,6 @@ const Users = ({ darkMode }) => {
     fetchUsers();
   }, []);
 
-  // =============================
-  // SEARCH FILTER
-  // =============================
   const filteredUsers = useMemo(() => {
     const value = search.toLowerCase();
     return users.filter(
@@ -55,9 +57,6 @@ const Users = ({ darkMode }) => {
     );
   }, [search, users]);
 
-  // =============================
-  // PAGINATION LOGIC
-  // =============================
   const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
 
   const paginatedUsers = useMemo(() => {
@@ -66,12 +65,9 @@ const Users = ({ darkMode }) => {
   }, [filteredUsers, currentPage]);
 
   useEffect(() => {
-    setCurrentPage(1); // reset page on search
+    setCurrentPage(1);
   }, [search]);
 
-  // =============================
-  // DELETE USER
-  // =============================
   const handleDelete = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
@@ -85,13 +81,23 @@ const Users = ({ darkMode }) => {
   };
 
   return (
-    <div className={`p-4 md:p-6 min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      <div className={`max-w-7xl mx-auto rounded-2xl shadow-lg p-5 
-        ${darkMode ? "bg-gray-800 text-white" : "bg-white"}`}>
-
+    <div
+      className={`p-4 md:p-6 min-h-screen ${
+        darkMode ? "bg-gray-900" : "bg-gray-50"
+      }`}
+    >
+      <div
+        className={`max-w-7xl mx-auto rounded-2xl shadow-lg p-5 ${
+          darkMode ? "bg-gray-800 text-white" : "bg-white"
+        }`}
+      >
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <h1 className="text-2xl font-bold text-blue-600">
+          <h1
+            className={`text-2xl font-bold ${
+              darkMode ? "text-blue-400" : "text-blue-600"
+            }`}
+          >
             Users Management
           </h1>
 
@@ -102,17 +108,29 @@ const Users = ({ darkMode }) => {
               placeholder="Search users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border
-                         focus:ring-2 focus:ring-blue-500 outline-none
-                         dark:bg-gray-700 dark:border-gray-600"
+              className={`w-full pl-10 pr-4 py-2 rounded-xl border focus:ring-2 focus:ring-blue-500 outline-none ${
+                darkMode
+                  ? "bg-gray-700 border-gray-600 text-white"
+                  : "bg-white border-gray-300"
+              }`}
             />
           </div>
         </div>
 
         {/* TABLE */}
-        <div className="overflow-x-auto rounded-xl border dark:border-gray-700">
+        <div
+          className={`overflow-x-auto rounded-xl border ${
+            darkMode ? "border-gray-700" : "border-gray-200"
+          }`}
+        >
           <table className="min-w-full text-sm">
-            <thead className="bg-blue-100 dark:bg-gray-700 text-blue-700 dark:text-gray-200">
+            <thead
+              className={`${
+                darkMode
+                  ? "bg-gray-700 text-gray-200"
+                  : "bg-blue-100 text-blue-700"
+              }`}
+            >
               <tr>
                 <th className="px-4 py-3 text-left">S NO</th>
                 <th className="px-4 py-3">ID</th>
@@ -130,13 +148,13 @@ const Users = ({ darkMode }) => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-8">
+                  <td colSpan="10" className="text-center py-8">
                     Loading users...
                   </td>
                 </tr>
               ) : paginatedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-8 text-gray-400">
+                  <td colSpan="10" className="text-center py-8 text-gray-400">
                     No users found
                   </td>
                 </tr>
@@ -144,8 +162,11 @@ const Users = ({ darkMode }) => {
                 paginatedUsers.map((user, index) => (
                   <tr
                     key={user._id}
-                    className="border-t dark:border-gray-700 fw-medium
-                               hover:bg-blue-50 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    className={`border-t transition ${
+                      darkMode
+                        ? "border-gray-700 text-white hover:bg-gray-700"
+                        : "border-gray-200 text-gray-800 hover:bg-blue-50 hover:text-black"
+                    }`}
                   >
                     <td className="px-4 py-3">
                       {(currentPage - 1) * USERS_PER_PAGE + index + 1}
@@ -159,87 +180,85 @@ const Users = ({ darkMode }) => {
                     <td className="px-4 py-3">
                       {user.profile?.username || "-"}
                     </td>
+                    <td className="px-4 py-3">{user.email || "-"}</td>
+                    <td className="px-4 py-3">{user.mobile || "-"}</td>
                     <td className="px-4 py-3">
-                      {user.email || "-"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {user.mobile || "-"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold
-                        ${user.accountStatus?.isActive
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"}`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          user.accountStatus?.isActive
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
                         {user.accountStatus?.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
+
                     <td className="px-4 py-3">
                       <button
                         onClick={() => {
                           setOpen(true);
                           setUserId(user._id);
                         }}
-                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition
-                          ${darkMode
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold ${
+                          darkMode
                             ? "bg-yellow-600 hover:bg-yellow-700 text-white"
                             : "bg-yellow-500 hover:bg-yellow-600 text-white"
-                          }`}
+                        }`}
                       >
-                        <FaCoins className="inline" />
+                        <FaCoins />
                       </button>
                     </td>
+
                     <td className="px-4 py-3">
                       <button
-                        onClick={() => navigate(`/admin/payment/user/${user._id}`)}
-                        className={`px-4 py-2 rounded-lg text-sm font-semibold transition
-                          ${darkMode
+                        onClick={() =>
+                          navigate(`/admin/payment/user/${user._id}`)
+                        }
+                        className={`px-4 py-2 rounded-lg text-sm font-semibold ${
+                          darkMode
                             ? "bg-green-600 hover:bg-green-700 text-white"
                             : "bg-green-500 hover:bg-green-600 text-white"
-                          }`}
+                        }`}
                       >
                         <FiDollarSign size={18} />
                       </button>
                     </td>
+
                     <td className="px-4 py-3">
                       <div className="flex justify-center gap-3">
-                        {/* View Posts */}
                         <button
-                          onClick={() => navigate(`/admin/userposts/${user._id}`)}
-                          title="View Posts"
-                          className="p-2 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-800 transition"
+                          onClick={() =>
+                            navigate(`/admin/userposts/${user._id}`)
+                          }
+                          className="p-2 rounded-full bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
                         >
                           <FiImage size={18} />
                         </button>
 
-                        {/* View Details */}
                         <button
-                          onClick={() => navigate(`/admin/users/details/${user._id}`)}
-                          title="View Details"
-                          className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 hover:text-purple-800 transition"
+                          onClick={() =>
+                            navigate(`/admin/users/details/${user._id}`)
+                          }
+                          className="p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200"
                         >
                           <FiInfo size={18} />
                         </button>
 
-                        {/* Edit */}
                         <button
                           onClick={() => navigate(`/admin/users/${user._id}`)}
-                          title="Edit User"
-                          className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition"
+                          className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
                         >
                           <FiEdit size={18} />
                         </button>
 
-                        {/* Delete */}
                         <button
                           onClick={() => handleDelete(user._id)}
-                          title="Delete User"
-                          className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition"
+                          className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200"
                         >
                           <FiTrash2 size={18} />
                         </button>
                       </div>
-
-
                     </td>
                   </tr>
                 ))
@@ -251,7 +270,7 @@ const Users = ({ darkMode }) => {
         {/* PAGINATION */}
         {totalPages > 1 && (
           <div className="flex justify-between items-center mt-6">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-800">
               Page {currentPage} of {totalPages}
             </p>
 
@@ -259,8 +278,7 @@ const Users = ({ darkMode }) => {
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => p - 1)}
-                className="p-2 rounded-lg border disabled:opacity-40
-                           hover:bg-blue-100 dark:hover:bg-gray-700"
+                className="p-2 rounded-lg border disabled:opacity-40"
               >
                 <FiChevronLeft />
               </button>
@@ -269,10 +287,13 @@ const Users = ({ darkMode }) => {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`px-3 py-1 rounded-lg text-sm
-                    ${currentPage === i + 1
+                  className={`px-3 py-1 rounded-lg text-sm ${
+                    currentPage === i + 1
                       ? "bg-blue-600 text-white"
-                      : "border hover:bg-blue-100 dark:hover:bg-gray-700"}`}
+                      : `border text-gray-800 ${
+                          darkMode ? "border-gray-700" : "border-gray-200"
+                        }`
+                  }`}
                 >
                   {i + 1}
                 </button>
@@ -281,8 +302,7 @@ const Users = ({ darkMode }) => {
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => p + 1)}
-                className="p-2 rounded-lg border disabled:opacity-40
-                           hover:bg-blue-100 dark:hover:bg-gray-700"
+                className="p-2 rounded-lg border disabled:opacity-40"
               >
                 <FiChevronRight />
               </button>
@@ -290,6 +310,7 @@ const Users = ({ darkMode }) => {
           </div>
         )}
       </div>
+
       {open && (
         <WalletAndSpins
           userId={userId}

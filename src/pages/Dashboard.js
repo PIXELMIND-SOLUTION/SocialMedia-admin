@@ -545,7 +545,7 @@ const Dashboard = ({ darkMode }) => {
                   : 'hover:bg-gray-50 border-gray-200'
                   } border`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between" onClick={()=>navigate(`/admin/campaigns/${campaign._id}`)}>
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">

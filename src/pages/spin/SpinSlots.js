@@ -4,7 +4,7 @@ const SpinSlots = ({ darkMode, slots, onSave }) => {
   return (
     <section
       className={`p-6 rounded-xl shadow ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white"
+        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
       <h2 className="text-lg font-semibold mb-6">
@@ -61,7 +61,7 @@ const SlotCard = ({ position, slot, darkMode, onSave }) => {
         onChange={(e) => setData({ ...data, label: e.target.value })}
         placeholder="Label"
         required
-        className="w-full mb-2 px-3 py-2 rounded border"
+        className="w-full mb-2 px-3 py-2 rounded border text-white"
       />
 
       <input
@@ -70,7 +70,7 @@ const SlotCard = ({ position, slot, darkMode, onSave }) => {
         onChange={(e) => setData({ ...data, coins: e.target.value })}
         placeholder="Coins"
         required
-        className="w-full mb-2 px-3 py-2 rounded border"
+        className="w-full mb-2 px-3 py-2 rounded border text-white"
       />
 
       <label className="flex items-center gap-2 text-sm mb-2">

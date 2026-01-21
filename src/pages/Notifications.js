@@ -154,7 +154,7 @@ const Notifications = ({ darkMode }) => {
                                     className={`border-t transition
                   ${darkMode
                                             ? "border-gray-700 text-gray-300 hover:bg-gray-800"
-                                            : "border-gray-100 hover:bg-gray-50"
+                                            : "border-gray-100 text-gray-700 hover:bg-gray-50"
                                         }`}
                                 >
                                     <td className="p-4 font-medium">

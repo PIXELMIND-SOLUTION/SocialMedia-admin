@@ -20,7 +20,7 @@ const CampaignPackage = ({ darkMode }) => {
     targetUsers: "",
     content: [],
     features: [],
-    priority: ""
+    priority: "",
   });
 
   /* ================= FETCH ================= */
@@ -61,8 +61,8 @@ const CampaignPackage = ({ darkMode }) => {
         postsInterval: Number(form.postsInterval),
         targetUsers: Number(form.targetUsers),
         priority: Number(form.priority),
-        isAdmin: "true"
-      })
+        isAdmin: "true",
+      }),
     });
 
     resetForm();
@@ -80,7 +80,7 @@ const CampaignPackage = ({ darkMode }) => {
       targetUsers: pkg.targetUsers,
       content: pkg.content || [],
       features: pkg.features || [],
-      priority: pkg.priority
+      priority: pkg.priority,
     });
   };
 
@@ -106,7 +106,7 @@ const CampaignPackage = ({ darkMode }) => {
   const removeTag = (type, value) => {
     setForm({
       ...form,
-      [type]: form[type].filter((v) => v !== value)
+      [type]: form[type].filter((v) => v !== value),
     });
   };
 
@@ -120,14 +120,18 @@ const CampaignPackage = ({ darkMode }) => {
       targetUsers: "",
       content: [],
       features: [],
-      priority: ""
+      priority: "",
     });
   };
 
   /* ================= UI ================= */
   return (
     <div className="space-y-6">
-      <h1 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>
+      <h1
+        className={`text-2xl font-bold ${
+          darkMode ? "text-white" : "text-gray-800"
+        }`}
+      >
         Campaign Package Management
       </h1>
 
@@ -138,13 +142,15 @@ const CampaignPackage = ({ darkMode }) => {
           darkMode ? "bg-gray-800 text-white" : "bg-white"
         }`}
       >
-        {/* PACKAGE NAME DROPDOWN */}
+        {/* PACKAGE NAME */}
         <select
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
           className={`px-4 py-2 rounded border focus:outline-none ${
-            darkMode ? "bg-gray-700 border-gray-600 text-white" : "bg-white"
+            darkMode
+              ? "bg-gray-700 border-gray-600 text-white"
+              : "bg-white text-gray-800 border-gray-300"
           }`}
         >
           <option value="">Select Package</option>
@@ -155,11 +161,41 @@ const CampaignPackage = ({ darkMode }) => {
           ))}
         </select>
 
-        <Input label="Price" type="number" value={form.price} onChange={(v) => setForm({ ...form, price: v })} />
-        <Input label="Duration (Hours)" type="number" value={form.durationHours} onChange={(v) => setForm({ ...form, durationHours: v })} />
-        <Input label="Posts Interval" type="number" value={form.postsInterval} onChange={(v) => setForm({ ...form, postsInterval: v })} />
-        <Input label="Target Users" type="number" value={form.targetUsers} onChange={(v) => setForm({ ...form, targetUsers: v })} />
-        <Input label="Priority" type="number" value={form.priority} onChange={(v) => setForm({ ...form, priority: v })} />
+        <Input
+          label="Price"
+          type="number"
+          value={form.price}
+          onChange={(v) => setForm({ ...form, price: v })}
+          darkMode={darkMode}
+        />
+        <Input
+          label="Duration (Hours)"
+          type="number"
+          value={form.durationHours}
+          onChange={(v) => setForm({ ...form, durationHours: v })}
+          darkMode={darkMode}
+        />
+        <Input
+          label="Posts Interval"
+          type="number"
+          value={form.postsInterval}
+          onChange={(v) => setForm({ ...form, postsInterval: v })}
+          darkMode={darkMode}
+        />
+        <Input
+          label="Target Users"
+          type="number"
+          value={form.targetUsers}
+          onChange={(v) => setForm({ ...form, targetUsers: v })}
+          darkMode={darkMode}
+        />
+        <Input
+          label="Priority"
+          type="number"
+          value={form.priority}
+          onChange={(v) => setForm({ ...form, priority: v })}
+          darkMode={darkMode}
+        />
 
         <TagInput
           label="Content"
@@ -168,6 +204,7 @@ const CampaignPackage = ({ darkMode }) => {
           onAdd={() => addTag("content")}
           tags={form.content}
           onRemove={(v) => removeTag("content", v)}
+          darkMode={darkMode}
         />
 
         <TagInput
@@ -177,6 +214,7 @@ const CampaignPackage = ({ darkMode }) => {
           onAdd={() => addTag("features")}
           tags={form.features}
           onRemove={(v) => removeTag("features", v)}
+          darkMode={darkMode}
         />
 
         <div className="sm:col-span-2 lg:col-span-3 flex flex-wrap gap-3 pt-4">
@@ -184,7 +222,15 @@ const CampaignPackage = ({ darkMode }) => {
             {editingId ? "Update Package" : "Create Package"}
           </button>
           {editingId && (
-            <button type="button" onClick={resetForm} className="px-6 py-2 rounded-lg bg-gray-300 text-gray-800">
+            <button
+              type="button"
+              onClick={resetForm}
+              className={`px-6 py-2 rounded-lg ${
+                darkMode
+                  ? "bg-gray-600 text-white"
+                  : "bg-gray-300 text-gray-800"
+              }`}
+            >
               Cancel
             </button>
           )}
@@ -192,9 +238,17 @@ const CampaignPackage = ({ darkMode }) => {
       </form>
 
       {/* ================= LIST ================= */}
-      <div className={`rounded-xl shadow overflow-x-auto ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+      <div
+        className={`rounded-xl shadow overflow-x-auto ${
+          darkMode ? "bg-gray-800" : "bg-white"
+        }`}
+      >
         <table className="w-full text-sm min-w-[900px]">
-          <thead className={darkMode ? "bg-gray-700 text-white" : "bg-gray-100"}>
+          <thead
+            className={`${
+              darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
+            }`}
+          >
             <tr>
               <th className="p-3">Name</th>
               <th className="p-3">Price</th>
@@ -205,9 +259,16 @@ const CampaignPackage = ({ darkMode }) => {
               <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className={darkMode ? "bg-gray-700 text-white" : "bg-gray-100"}>
+          <tbody>
             {packages.map((pkg) => (
-              <tr key={pkg._id} className="border-t text-center">
+              <tr
+                key={pkg._id}
+                className={`border-t text-center ${
+                  darkMode
+                    ? "border-gray-700 text-white hover:bg-gray-700"
+                    : "border-gray-200 text-gray-800 hover:bg-gray-50"
+                }`}
+              >
                 <td className="p-3">{pkg.name}</td>
                 <td className="p-3">₹{pkg.price}</td>
                 <td className="p-3">{pkg.durationHours}h</td>
@@ -215,10 +276,16 @@ const CampaignPackage = ({ darkMode }) => {
                 <td className="p-3">{pkg.content.join(", ")}</td>
                 <td className="p-3">{pkg.features.join(", ")}</td>
                 <td className="p-3 text-right space-x-2">
-                  <button onClick={() => handleEdit(pkg)} className="px-3 py-1 bg-yellow-500 text-white rounded">
+                  <button
+                    onClick={() => handleEdit(pkg)}
+                    className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded"
+                  >
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(pkg._id)} className="px-3 py-1 bg-red-600 text-white rounded">
+                  <button
+                    onClick={() => handleDelete(pkg._id)}
+                    className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded"
+                  >
                     Delete
                   </button>
                 </td>
@@ -232,37 +299,72 @@ const CampaignPackage = ({ darkMode }) => {
 };
 
 /* ================= REUSABLE INPUT ================= */
-const Input = ({ label, value, onChange, type = "text" }) => (
+const Input = ({ label, value, onChange, type = "text", darkMode }) => (
   <input
     type={type}
     placeholder={label}
     value={value}
     onChange={(e) => onChange(e.target.value)}
     required
-    className="px-4 py-2 rounded border focus:outline-none"
+    className={`px-4 py-2 rounded border focus:outline-none ${
+      darkMode
+        ? "bg-gray-700 border-gray-600 text-white"
+        : "bg-white text-gray-800 border-gray-300"
+    }`}
   />
 );
 
 /* ================= TAG INPUT ================= */
-const TagInput = ({ label, value, onChange, onAdd, tags, onRemove }) => (
+const TagInput = ({
+  label,
+  value,
+  onChange,
+  onAdd,
+  tags,
+  onRemove,
+  darkMode,
+}) => (
   <div className="space-y-2">
-    <label className="text-sm font-semibold">{label}</label>
+    <label
+      className={`text-sm font-semibold ${
+        darkMode ? "text-gray-200" : "text-gray-700"
+      }`}
+    >
+      {label}
+    </label>
     <div className="flex gap-2">
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="flex-1 px-3 py-2 border rounded"
+        className={`flex-1 px-3 py-2 border rounded ${
+          darkMode
+            ? "bg-gray-700 border-gray-600 text-white"
+            : "bg-white text-gray-800 border-gray-300"
+        }`}
         placeholder={`Add ${label}`}
       />
-      <button type="button" onClick={onAdd} className="px-4 py-2 bg-green-600 text-white rounded">
+      <button
+        type="button"
+        onClick={onAdd}
+        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+      >
         Add
       </button>
     </div>
     <div className="flex flex-wrap gap-2">
       {tags.map((tag, i) => (
-        <span key={i} className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs flex items-center gap-1">
+        <span
+          key={i}
+          className={`px-3 py-1 rounded-full text-xs flex items-center gap-1 ${
+            darkMode
+              ? "bg-indigo-900 text-indigo-300"
+              : "bg-indigo-100 text-indigo-700"
+          }`}
+        >
           {tag}
-          <button type="button" onClick={() => onRemove(tag)}>✕</button>
+          <button type="button" onClick={() => onRemove(tag)}>
+            ✕
+          </button>
         </span>
       ))}
     </div>

@@ -8,7 +8,7 @@ const CoinPackage = ({ darkMode }) => {
   const [form, setForm] = useState({
     coins: "",
     price: "",
-    originalPrice: ""
+    originalPrice: "",
   });
   const [editingId, setEditingId] = useState(null);
 
@@ -49,8 +49,8 @@ const CoinPackage = ({ darkMode }) => {
           price: Number(form.price),
           originalPrice: form.originalPrice
             ? Number(form.originalPrice)
-            : null
-        })
+            : null,
+        }),
       });
 
       setForm({ coins: "", price: "", originalPrice: "" });
@@ -67,7 +67,7 @@ const CoinPackage = ({ darkMode }) => {
 
     try {
       await fetch(`${API_BASE}/package/${packageId}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
       fetchPackages();
     } catch (err) {
@@ -81,7 +81,7 @@ const CoinPackage = ({ darkMode }) => {
     setForm({
       coins: pkg.coins,
       price: pkg.price,
-      originalPrice: pkg.originalPrice || ""
+      originalPrice: pkg.originalPrice || "",
     });
   };
 
@@ -100,9 +100,7 @@ const CoinPackage = ({ darkMode }) => {
       <form
         onSubmit={handleSubmit}
         className={`grid grid-cols-1 md:grid-cols-4 gap-4 p-6 rounded-xl shadow ${
-          darkMode
-            ? "bg-gray-800 text-white"
-            : "bg-white text-gray-800"
+          darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
         }`}
       >
         <input
@@ -111,7 +109,11 @@ const CoinPackage = ({ darkMode }) => {
           value={form.coins}
           onChange={(e) => setForm({ ...form, coins: e.target.value })}
           required
-          className="px-4 py-2 rounded border focus:outline-none"
+          className={`px-4 py-2 rounded border focus:outline-none ${
+            darkMode
+              ? "bg-gray-700 border-gray-600 text-white"
+              : "bg-white text-gray-800 border-gray-300"
+          }`}
         />
 
         <input
@@ -120,7 +122,11 @@ const CoinPackage = ({ darkMode }) => {
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
           required
-          className="px-4 py-2 rounded border focus:outline-none"
+          className={`px-4 py-2 rounded border focus:outline-none ${
+            darkMode
+              ? "bg-gray-700 border-gray-600 text-white"
+              : "bg-white text-gray-800 border-gray-300"
+          }`}
         />
 
         <input
@@ -130,7 +136,11 @@ const CoinPackage = ({ darkMode }) => {
           onChange={(e) =>
             setForm({ ...form, originalPrice: e.target.value })
           }
-          className="px-4 py-2 rounded border focus:outline-none"
+          className={`px-4 py-2 rounded border focus:outline-none ${
+            darkMode
+              ? "bg-gray-700 border-gray-600 text-white"
+              : "bg-white text-gray-800 border-gray-300"
+          }`}
         />
 
         <button
@@ -183,8 +193,8 @@ const CoinPackage = ({ darkMode }) => {
                   key={pkg._id}
                   className={`border-t ${
                     darkMode
-                      ? "border-gray-700 text-gray-200"
-                      : "border-gray-200"
+                      ? "border-gray-700 text-gray-200 hover:bg-gray-700"
+                      : "border-gray-200 text-gray-800 hover:bg-gray-50"
                   }`}
                 >
                   <td className="p-3">{pkg.coins}</td>
@@ -206,13 +216,13 @@ const CoinPackage = ({ darkMode }) => {
                   <td className="p-3 text-right space-x-2">
                     <button
                       onClick={() => handleEdit(pkg)}
-                      className="px-3 py-1 rounded bg-yellow-500 text-white"
+                      className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(pkg._id)}
-                      className="px-3 py-1 rounded bg-red-600 text-white"
+                      className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white"
                     >
                       Delete
                     </button>

@@ -37,7 +37,7 @@ const SpinHistory = ({ darkMode, spins, onDelete }) => {
     /* ================= UI ================= */
     return (
         <section
-            className={`p-6 rounded-xl shadow space-y-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white"
+            className={`p-6 rounded-xl shadow space-y-6 ${darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
                 }`}
         >
             <h2 className="text-lg font-semibold">
@@ -52,14 +52,14 @@ const SpinHistory = ({ darkMode, spins, onDelete }) => {
                     placeholder="Search user / email / reward"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-lg border focus:ring-2 focus:ring-indigo-500"
+                    className="flex-1 px-4 py-2 rounded-lg border text-white focus:ring-2 focus:ring-indigo-500"
                 />
 
                 {/* Reward Filter */}
                 <select
                     value={rewardFilter}
                     onChange={(e) => setRewardFilter(e.target.value)}
-                    className="px-4 py-2 rounded-lg border"
+                    className="px-4 py-2 rounded-lg border text-white"
                 >
                     <option value="all">All Rewards</option>
                     {[...new Set(spins.map((s) => s.reward))].map((r) => (
@@ -73,7 +73,7 @@ const SpinHistory = ({ darkMode, spins, onDelete }) => {
                 <select
                     value={pageSize}
                     onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="px-4 py-2 rounded-lg border"
+                    className="px-4 py-2 rounded-lg border text-white"
                 >
                     {PAGE_SIZES.map((s) => (
                         <option key={s} value={s}>

@@ -112,7 +112,7 @@ const Rooms = ({ darkMode }) => {
       {/* HEADER */}
       <h1
         className={`text-3xl font-bold ${
-          darkMode ? "text-white" : "text-gray-900"
+          darkMode ? "text-white" : "text-gray-800"
         }`}
       >
         Rooms Management
@@ -126,20 +126,20 @@ const Rooms = ({ darkMode }) => {
         className={`px-4 py-2 rounded-xl w-full md:w-80 border ${
           darkMode
             ? "bg-gray-900 border-gray-700 text-white"
-            : "bg-white border-gray-300"
+            : "bg-white text-gray-700 border-gray-300"
         }`}
       />
 
       {/* TABLE */}
       <div
         className={`rounded-2xl overflow-hidden shadow border ${
-          darkMode ? "border-gray-800" : ""
+          darkMode ? "border-gray-800" : " text-gray-700"
         }`}
       >
         <table className="w-full text-sm">
           <thead
             className={`${
-              darkMode ? "bg-gray-800 text-gray-300" : "bg-gray-100"
+              darkMode ? "bg-gray-800 text-gray-300" : "bg-gray-100 text-gray-700"
             }`}
           >
             <tr>
@@ -267,12 +267,12 @@ const Rooms = ({ darkMode }) => {
             }`}
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">
+              <h2 className="text-xl font-bold text-gray-700">
                 Room Members – {selectedRoom}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-xl"
+                className={`${darkMode ? "text-white" : "text-gray-700"} text-xl font-bold`}
               >
                 ✕
               </button>
@@ -285,7 +285,7 @@ const Rooms = ({ darkMode }) => {
               className={`w-full mb-3 px-3 py-2 rounded border ${
                 darkMode
                   ? "bg-gray-800 border-gray-700"
-                  : "bg-white border-gray-300"
+                  : "bg-white text-gray-700 border-gray-300"
               }`}
             />
 
@@ -305,14 +305,14 @@ const Rooms = ({ darkMode }) => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full text-white text-sm">
+                      <div className="flex items-center justify-center h-full text-black text-sm">
                         {m.fullName.charAt(0)}
                       </div>
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold">{m.fullName}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className={`${darkMode ? "text-white" : "text-gray-700"} font-semibold`}>{m.fullName}</p>
+                    <p className={`${darkMode ? "text-gray-300" : "text-gray-500"} text-xs`}>
                       @{m.username}
                     </p>
                   </div>
@@ -325,17 +325,17 @@ const Rooms = ({ darkMode }) => {
               <button
                 disabled={memberPage === 1}
                 onClick={() => setMemberPage((p) => p - 1)}
-                className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+                className="px-3 py-1 rounded text-gray-700 bg-gray-300"
               >
                 Prev
               </button>
-              <span className="text-sm">
+              <span className="text-sm text-black">
                 {memberPage} / {modalPages}
               </span>
               <button
                 disabled={memberPage === modalPages}
                 onClick={() => setMemberPage((p) => p + 1)}
-                className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+                className="px-3 py-1 rounded text-black bg-gray-300 disabled:opacity-50"
               >
                 Next
               </button>

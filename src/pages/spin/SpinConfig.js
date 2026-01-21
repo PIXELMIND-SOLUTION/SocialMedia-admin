@@ -6,7 +6,7 @@ const SpinConfig = ({ darkMode, onSave }) => {
   return (
     <section
       className={`p-6 rounded-xl shadow ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white"
+        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
       }`}
     >
       <h2 className="text-lg font-semibold mb-4">

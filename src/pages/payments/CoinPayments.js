@@ -136,7 +136,7 @@ const CoinPayments = ({ darkMode, collapsed }) => {
             className={`px-3 py-2 rounded-lg text-sm border ${
               darkMode
                 ? "bg-gray-800 border-gray-700 text-white"
-                : "bg-white border-gray-300"
+                : "bg-white text-gray-700 border-gray-300"
             }`}
           />
 
@@ -149,7 +149,7 @@ const CoinPayments = ({ darkMode, collapsed }) => {
             className={`px-3 py-2 rounded-lg text-sm border ${
               darkMode
                 ? "bg-gray-800 border-gray-700 text-white"
-                : "bg-white border-gray-300"
+                : "bg-white text-gray-700 border-gray-300"
             }`}
           >
             <option value="all">All Status</option>
@@ -165,7 +165,7 @@ const CoinPayments = ({ darkMode, collapsed }) => {
             className={`px-3 py-2 rounded-lg text-sm border ${
               darkMode
                 ? "bg-gray-800 border-gray-700 text-white"
-                : "bg-white border-gray-300"
+                : "bg-white text-gray-700 border-gray-300"
             }`}
           >
             {PAGE_SIZES.map((s) => (
@@ -187,7 +187,7 @@ const CoinPayments = ({ darkMode, collapsed }) => {
       {/* TABLE */}
       <div
         className={`overflow-x-auto rounded-xl shadow ${
-          darkMode ? "bg-gray-900" : "bg-white"
+          darkMode ? "bg-gray-900" : "bg-white text-gray-700"
         }`}
       >
         {loading ? (
@@ -290,17 +290,17 @@ const CoinPayments = ({ darkMode, collapsed }) => {
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((p) => p - 1)}
-          className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+          className="px-3 py-1 rounded text-gray-700 bg-gray-300 disabled:opacity-50"
         >
           Prev
         </button>
-        <span className="px-3 py-1 rounded bg-gray-200">
+        <span className="px-3 py-1 rounded text-gray-700 bg-gray-200">
           {currentPage} / {totalPages || 1}
         </span>
         <button
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((p) => p + 1)}
-          className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+          className="px-3 py-1 rounded text-gray-700 bg-gray-300 disabled:opacity-50"
         >
           Next
         </button>
